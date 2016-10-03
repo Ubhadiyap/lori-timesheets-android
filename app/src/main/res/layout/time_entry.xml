@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.balysv.materialripple.MaterialRippleLayout
+        android:id="@+id/rippleView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mrl_rippleDelayClick="false"
+        app:mrl_rippleHover="false"
+        android:clickable="true"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearance"
+                android:text="0:00"
+                android:id="@+id/timeTextView"
+                android:layout_gravity="center_vertical"
+                android:textSize="14sp"
+                android:paddingLeft="5dp"/>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Main Application"
+                    android:id="@+id/taskTextView"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textSize="10sp"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"/>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sherlock (Development)"
+                    android:id="@+id/projectAndActivityTextView"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textSize="10sp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</com.balysv.materialripple.MaterialRippleLayout>

@@ -1,0 +1,78 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'android-apt'
+
+repositories {
+    jcenter()
+    maven { url "https://clojars.org/repo/" }
+}
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.2"
+
+    defaultConfig {
+        applicationId "com.lori"
+        minSdkVersion 17
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:design:24.2.1'
+    compile 'org.modelmapper:modelmapper:0.7.5'
+
+    def nucleusVersion = '4.0.0'
+    compile "info.android15.nucleus:nucleus:$nucleusVersion"
+    compile "info.android15.nucleus:nucleus-support-v4:$nucleusVersion"
+    compile "info.android15.nucleus:nucleus-support-v7:$nucleusVersion"
+
+    def retrofitVersion = '2.1.0'
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion"
+
+    compile 'io.reactivex:rxjava:1.2.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    def icepickVersion = '3.2.0'
+    compile "frankiesardo:icepick:$icepickVersion"
+    apt "frankiesardo:icepick-processor:$icepickVersion"
+
+    def daggerVersion = '2.7'
+    compile "javax.annotation:javax.annotation-api:1.2"
+    compile "com.google.dagger:dagger:$daggerVersion"
+    apt "com.google.dagger:dagger-compiler:$daggerVersion"
+
+    compile 'org.greenrobot:eventbus:3.0.0'
+
+    compile 'com.github.rey5137:material:1.2.4'
+
+    compile 'com.balysv:material-ripple:1.0.2'
+
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
+    compile 'com.squareup.okhttp3:mockwebserver:3.4.1'
+
+    compile 'org.apache.commons:commons-lang3:3.4'
+}

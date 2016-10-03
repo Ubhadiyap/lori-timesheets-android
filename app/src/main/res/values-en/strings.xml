@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_time_entry_activity_type_label">3. Type</string>
+    <string name="dialog_time_entry_add_button_text">add</string>
+    <string name="dialog_time_entry_delete_button_text">delete</string>
+    <string name="dialog_time_entry_hours_label">4. Hours</string>
+    <string name="dialog_time_entry_minutes_label">5. Minutes</string>
+    <string name="dialog_time_entry_project_label">1. Project</string>
+    <string name="dialog_time_entry_task_label">2. Task</string>
+    <string name="fridayPattern">FRI [%s]</string>
+    <string name="mondayPattern">MON [%s]</string>
+    <string name="saturdayPattern">SAT [%s]</string>
+    <string name="sundayPattern">SUN [%s]</string>
+    <string name="thursdayPattern">THU [%s]</string>
+    <string name="today_menu_item">Today</string>
+    <string name="tuesdayPattern">TUE [%s]</string>
+    <string name="wednesdayPattern">WED [%s]</string>
+    <string name="dialog_time_entry_save_button_text">save</string>
+    <string name="empty_time_entry_list_place_holder_label">empty</string>
+    <string name="week_totals_fragment_total_label">total</string>
+    <string name="month_april_name">April</string>
+    <string name="month_august_name">August</string>
+    <string name="month_december_name">December</string>
+    <string name="month_february_name">February</string>
+    <string name="month_january_name">January</string>
+    <string name="month_july_name">July</string>
+    <string name="month_june_name">June</string>
+    <string name="month_march_name">March</string>
+    <string name="month_may_name">May</string>
+    <string name="month_november_name">November</string>
+    <string name="month_october_name">October</string>
+    <string name="month_september_name">September</string>
+</resources>

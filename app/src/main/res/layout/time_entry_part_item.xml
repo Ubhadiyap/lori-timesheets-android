@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <com.balysv.materialripple.MaterialRippleLayout
+            android:id="@+id/rippleView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:mrl_ripplePersistent="true"
+            app:mrl_rippleDelayClick="false"
+            app:mrl_rippleHover="false">
+
+        <TextView
+                android:id="@+id/partNameTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hadoop"
+                android:clickable="true"
+                android:textAppearance="?android:attr/textAppearance"
+                android:padding="7dp"
+                android:singleLine="true"/>
+
+    </com.balysv.materialripple.MaterialRippleLayout>
+
+</LinearLayout>

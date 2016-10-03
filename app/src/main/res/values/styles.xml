@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/white</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/darker_yellow</item>
+    </style>
+
+    <style name="AppTheme.TimeEntry.Button.Confirm" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">#4caf50</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AppTheme.TimeEntry.Button.Delete" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">#ff5252</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+</resources>

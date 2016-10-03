@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@android:color/white" android:paddingLeft="5dp" android:paddingRight="5dp">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp">
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+            <TextView
+                    android:text="@string/dialog_time_entry_project_label"
+                    android:id="@+id/textView9"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/projectsListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:background="@color/light_yellow"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_time_entry_task_label"
+                    android:id="@+id/textView10"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/tasksListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:background="@color/light_yellow"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dialog_time_entry_activity_type_label"
+                    android:id="@+id/textView11"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:layout_weight="1"
+                    android:layout_marginBottom="5dp"/>
+
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/activityTypesListView"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:layout_weight="1"
+                    android:background="@color/light_yellow"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_time_entry_hours_label"
+            android:id="@+id/partNameTextView"
+            android:paddingTop="5dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/light_yellow"
+            android:id="@+id/hoursLinearLayout">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView0"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView0"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView1"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="1"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView1"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView2"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="2"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView2"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView3"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="3"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView3"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView4"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="4"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center" android:id="@+id/hoursTextView4"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView5"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="5"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView5"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView6"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="6"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/hoursTextView6"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                android:id="@+id/hoursRippleView7"
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="7"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center" android:id="@+id/hoursTextView7"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dialog_time_entry_minutes_label"
+            android:id="@+id/textView8"
+            android:paddingTop="0dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@color/light_yellow"
+            android:id="@+id/minutesLinearLayout">
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                app:mrl_rippleHover="false"
+                android:id="@+id/minutesRippleView0"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="0"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center" android:id="@+id/minutesTextView0"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="15"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+                    android:id="@+id/minutesTextView15"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="30"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/minutesTextView30"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+        <com.balysv.materialripple.MaterialRippleLayout
+                app:mrl_rippleHover="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:mrl_ripplePersistent="true"
+                app:mrl_rippleDelayClick="false"
+                android:layout_weight="1">
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="45"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:id="@+id/minutesTextView45"
+                    android:clickable="true"/>
+
+        </com.balysv.materialripple.MaterialRippleLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <Button
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                android:visibility="visible"
+                android:text="@string/dialog_time_entry_delete_button_text"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/AppTheme.TimeEntry.Button.Delete"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"/>
+
+        <Button
+                android:id="@+id/confirmButton"
+                android:layout_weight="0.7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/dialog_time_entry_add_button_text"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:theme="@style/AppTheme.TimeEntry.Button.Confirm"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

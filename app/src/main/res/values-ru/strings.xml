@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="dialog_time_entry_activity_type_label">3. Тип</string>
+    <string name="dialog_time_entry_add_button_text">добавить</string>
+    <string name="dialog_time_entry_delete_button_text">удалить</string>
+    <string name="dialog_time_entry_hours_label">4. Часы</string>
+    <string name="dialog_time_entry_minutes_label">5. Минуты</string>
+    <string name="dialog_time_entry_project_label">1. Проект</string>
+    <string name="dialog_time_entry_task_label">2. Задача</string>
+    <string name="fridayPattern">ПТ [%s]</string>
+    <string name="mondayPattern">ПН [%s]</string>
+    <string name="saturdayPattern">СБ [%s]</string>
+    <string name="sundayPattern">ВС [%s]</string>
+    <string name="thursdayPattern">ЧТ [%s]</string>
+    <string name="today_menu_item">Сегодня</string>
+    <string name="tuesdayPattern">ВТ [%s]</string>
+    <string name="wednesdayPattern">СР [%s]</string>
+    <string name="dialog_time_entry_save_button_text">сохранить</string>
+    <string name="empty_time_entry_list_place_holder_label">пусто</string>
+    <string name="week_totals_fragment_total_label">всего</string>
+    <string name="month_april_name">Апрель</string>
+    <string name="month_august_name">Август</string>
+    <string name="month_december_name">Декабрь</string>
+    <string name="month_february_name">Февраль</string>
+    <string name="month_january_name">Январь</string>
+    <string name="month_july_name">Июль</string>
+    <string name="month_june_name">Июнь</string>
+    <string name="month_march_name">Март</string>
+    <string name="month_may_name">Май</string>
+    <string name="month_november_name">Ноябрь</string>
+    <string name="month_october_name">Октябрь</string>
+    <string name="month_september_name">Сентябрь</string>
+</resources>

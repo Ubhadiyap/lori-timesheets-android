@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <FrameLayout
+                android:id="@+id/fragmentMonday"
+                android:clickable="true"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+        <FrameLayout
+                android:id="@+id/fragmentFriday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <FrameLayout
+                android:id="@+id/fragmentTuesday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+        <FrameLayout
+                android:id="@+id/fragmentSaturday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <FrameLayout
+                android:id="@+id/fragmentWednesday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+        <FrameLayout
+                android:id="@+id/fragmentSunday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        <FrameLayout
+                android:id="@+id/fragmentThursday"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+        <FrameLayout
+                android:id="@+id/fragmentWeekTotal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</LinearLayout>

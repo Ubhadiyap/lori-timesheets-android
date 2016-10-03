@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3f51b5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="light_yellow">#fff8e1</color>
+    <color name="dark_yellow">#ffecb3</color>
+    <color name="darker_yellow">#f9a825</color>
+
+    <color name="light_purple">#f3e5f5</color>
+    <color name="dark_purple">#e1bee7</color>
+    <color name="darker_purple">#e040fb</color>
+
+    <color name="light_orange">#fff3e0</color>
+    <color name="dark_orange">#ffe0b2</color>
+    <color name="darker_orange">#ff9100</color>
+
+    <color name="light_deep_purple">#ede7f6</color>
+    <color name="dark_deep_purple">#d1c4e9</color>
+    <color name="darker_deep_purple">#7c4dff</color>
+
+    <color name="light_deep_orange">#fbe9e7</color>
+    <color name="dark_deep_orange">#ffccbc</color>
+    <color name="darker_deep_orange">#ff6e40</color>
+
+    <color name="light_deep_brown">#efebe9</color>
+    <color name="dark_deep_brown">#d7ccc8</color>
+    <color name="darker_deep_brown">#5d4037</color>
+
+    <color name="light_deep_grey">#eceff1</color>
+    <color name="dark_deep_grey">#cfd8dc</color>
+    <color name="darker_deep_grey">#455a64</color>
+</resources>

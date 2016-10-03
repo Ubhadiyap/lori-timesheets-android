@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_time_entry_list_place_holder_label"
+            android:visibility="gone"
+            android:id="@+id/placeHolderTextView"
+            android:textAppearance="?android:attr/textAppearance"
+            android:textSize="10sp"
+            android:layout_gravity="center_horizontal"
+            android:alpha="0.3"
+            android:allowUndo="false"/>
+
+</FrameLayout>

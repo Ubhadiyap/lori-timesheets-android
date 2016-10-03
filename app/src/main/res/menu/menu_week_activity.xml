@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context=".ui.activity.WeekActivity">
+
+    <item android:id="@+id/action_go_to_today"
+          android:layout_width="12dp"
+          android:layout_height="12dp"
+          android:title="@string/today_menu_item"
+          android:orderInCategory="100"
+          android:icon="@drawable/calendar_today"
+          app:showAsAction="always"/>
+
+</menu>

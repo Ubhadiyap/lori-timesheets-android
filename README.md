@@ -1,5 +1,7 @@
 # <img src="https://raw.githubusercontent.com/artemik/lori-timesheets-android/master/demo/readme-title-image.png" width="35"> Lori Timesheets Android Client 
-The application lets you manage your Lori time sheets - view, add, edit, delete time entries, etc.
+This is an Android client for the open source timesheets management system [Lori Timesheets](https://github.com/Haulmont/platform-sample-timesheets).
+
+The application lets you manage timesheets - view, add, edit, delete time entries, etc.
 
 Mainly, the application consists of two screens - a week overview screen and a time entry edit dialog (pictures below). A gif video demonstrating the application is in the [demo folder](demo/video-gif.gif).
 

@@ -15,3 +15,13 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+-dontoptimize
+
+# Dagger inject methods are not called explicitly due to com.lori.core.app.util.ComponentReflectionInjector,
+# need to specify them here.
+-keep @dagger.Component interface * {
+    *;
+}

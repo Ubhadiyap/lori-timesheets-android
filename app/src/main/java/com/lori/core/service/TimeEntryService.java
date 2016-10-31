@@ -2,73 +2,68 @@ package com.lori.core.service;
 
 import com.lori.core.entity.Project;
 import com.lori.core.entity.TimeEntry;
-import com.lori.core.gate.lori.dto.ProjectDto;
-import com.lori.core.gate.lori.dto.TimeEntryDto;
-import com.lori.core.gate.lori.retrofit.RetrofitLoriService;
-import com.lori.core.gate.lori.retrofit.RetrofitLoriServiceFactory;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import retrofit2.Response;
+import com.lori.core.entity.User;
+import com.lori.core.gate.lori.LoriGate;
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
-import static com.lori.core.gate.lori.retrofit.MockLoriServer.MOCK_BASE_URL;
 
 /**
  * @author artemik
  */
+@Singleton
 public class TimeEntryService {
 
-    private RetrofitLoriService retrofitLoriService = RetrofitLoriServiceFactory.create(MOCK_BASE_URL);
-    private static final int NETWORK_FAKE_DELAY_MS = 600;
+    @Inject
+    LoriGate loriGate;
 
-    public Observable<Boolean> saveTimeEntry(TimeEntry timeEntry) {
-        TimeEntryDto timeEntryDto = new ModelMapper().map(timeEntry, TimeEntryDto.class);
+    @Inject
+    SessionService sessionService;
 
-        return retrofitLoriService.saveTimeEntry(timeEntryDto)
-                .subscribeOn(Schedulers.io())
-                .delay(NETWORK_FAKE_DELAY_MS, TimeUnit.MILLISECONDS)
-                .map(Response::isSuccessful);
+    @Inject
+    public TimeEntryService() {
     }
 
-    public Observable<Boolean> deleteTimeEntry(TimeEntry timeEntry) {
-        TimeEntryDto timeEntryDto = new ModelMapper().map(timeEntry, TimeEntryDto.class);
-
-        return retrofitLoriService.deleteTimeEntry(timeEntryDto)
+    public Observable<TimeEntry> saveTimeEntry(TimeEntry timeEntry) {
+        return loriGate.commitTimeEntry(sessionService.getUser(), true, timeEntry)
                 .subscribeOn(Schedulers.io())
-                .delay(NETWORK_FAKE_DELAY_MS, TimeUnit.MILLISECONDS)
-                .map(Response::isSuccessful);
+                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
+                        null : Observable.just(timeEntries.get(0))
+                );
     }
 
-    public Observable<List<TimeEntry>> loadTimeEntries(Calendar firstDayOfWeek) {
-        Calendar endDayOfWeek = (Calendar) firstDayOfWeek.clone();
-        endDayOfWeek.set(Calendar.DAY_OF_WEEK, 1);
-
-        return retrofitLoriService.loadTimeEntries(firstDayOfWeek.getTime().getTime(), endDayOfWeek.getTime().getTime())
+    public Observable<TimeEntry> updateTimeEntry(TimeEntry timeEntry) {
+        //TODO: merge update and save method into one.
+        return loriGate.commitTimeEntry(sessionService.getUser(), false, timeEntry)
                 .subscribeOn(Schedulers.io())
-                .delay(NETWORK_FAKE_DELAY_MS, TimeUnit.MILLISECONDS)
-                .map(timeEntriesConversionFunction());
+                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
+                        null : Observable.just(timeEntries.get(0))
+                );
+    }
+
+    public Observable<TimeEntry> removeTimeEntry(TimeEntry timeEntry) {
+        return loriGate.removeTimeEntry(timeEntry)
+                .subscribeOn(Schedulers.io())
+                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
+                        null : Observable.just(timeEntries.get(0))
+                );
+    }
+
+    public Observable<List<TimeEntry>> loadWeekTimeEntries(Calendar monday) {
+        Calendar sunday = (Calendar) monday.clone();
+        sunday.set(Calendar.DAY_OF_WEEK, 1); // Set to sunday.
+
+        User user = sessionService.getUser();
+
+        return loriGate.loadTimeEntries(monday.getTime(), sunday.getTime(), user);
     }
 
     public Observable<List<Project>> loadAvailableProjects() {
-        return retrofitLoriService.loadAvailableProjects()
-                .subscribeOn(Schedulers.io())
-                .delay(NETWORK_FAKE_DELAY_MS, TimeUnit.MILLISECONDS)
-                .map(projectsConversionFunction());
-    }
-
-    private Func1<List<ProjectDto>, List<Project>> projectsConversionFunction() {
-        return projectDtos -> new ModelMapper().map(projectDtos, new TypeToken<List<Project>>() {
-        }.getType());
-    }
-
-    private Func1<List<TimeEntryDto>, List<TimeEntry>> timeEntriesConversionFunction() {
-        return timeEntryDtos -> new ModelMapper().map(timeEntryDtos, new TypeToken<List<TimeEntry>>() {
-        }.getType());
+        return loriGate.loadAvailableProjects(sessionService.getUser())
+                .subscribeOn(Schedulers.io());
     }
 }

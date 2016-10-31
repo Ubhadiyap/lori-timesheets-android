@@ -1,9 +1,12 @@
 package com.lori.ui.base;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.lori.R;
 import com.lori.core.app.util.Injector;
 import icepick.Icepick;
 import nucleus.factory.PresenterFactory;
@@ -28,15 +31,24 @@ public abstract class BaseActivity<P extends Presenter> extends NucleusAppCompat
         super.onCreate(savedInstanceState);
         Icepick.restoreInstanceState(this, savedInstanceState);
 
-        final int layoutResID = getContentViewId();
-        setContentView(layoutResID);
+        Integer layoutResourceId = getContentViewId();
+        if (layoutResourceId != null) {
+            setContentView(layoutResourceId);
+        }
 
         unbinder = ButterKnife.bind(this, getRoot());
 
         onContentViewSet();
     }
 
-    protected abstract int getContentViewId();
+    protected void inject() {
+        ((Injector) getApplication()).inject(this);
+    }
+
+    @Nullable
+    protected Integer getContentViewId() {
+        return null;
+    };
 
     protected void onContentViewSet() {
     }
@@ -55,5 +67,13 @@ public abstract class BaseActivity<P extends Presenter> extends NucleusAppCompat
     protected void onDestroy() {
         super.onDestroy();
         unbinder.unbind();
+    }
+
+    protected void showToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    public void showNetworkError() {
+        showToast(getString(R.string.error_network));
     }
 }

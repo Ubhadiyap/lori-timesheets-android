@@ -20,6 +20,7 @@ import com.lori.core.entity.ActivityType;
 import com.lori.core.entity.Project;
 import com.lori.core.entity.Task;
 import com.lori.core.entity.TimeEntry;
+import com.lori.ui.UiUtils;
 import com.lori.ui.adapter.ActivityTypeListAdapter;
 import com.lori.ui.adapter.ProjectListAdapter;
 import com.lori.ui.adapter.TaskListAdapter;
@@ -102,15 +103,15 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
         initEntryPartListView(tasksListView, new TaskListAdapter(this));
         initEntryPartListView(activityTypesListView, new ActivityTypeListAdapter(this));
 
-        final int dialogWeekColor = DayFragmentStylist.getBodyBackgroundColor(getContext(), dayDate);
+        int dialogWeekColor = DayFragmentStylist.getBodyBackgroundColor(getContext(), dayDate);
         hoursLinearLayout.setBackgroundColor(dialogWeekColor);
         minutesLinearLayout.setBackgroundColor(dialogWeekColor);
 
         initHourClicks();
         initMinutesClicks();
 
-        setButtonForEdit(false);
-        setButtonsActive(false);
+        setButtonsAreForEdit(false);
+        setButtonsAreActive(false);
 
         heightParam(ViewGroup.LayoutParams.WRAP_CONTENT);
         inDuration(DIALOG_ANIMATION_DURATION);
@@ -179,10 +180,10 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
 
         if (projects != null && !projects.isEmpty()) {
             Project firstProject = projects.get(0);
-            setButtonsActive(true);
+            setButtonsAreActive(true);
             onProjectClick(firstProject);
         } else {
-            setButtonsActive(false);
+            setButtonsAreActive(false);
         }
     }
 
@@ -193,7 +194,7 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
 
             onTaskClick(project.getTasks().get(0));
         } else {
-            setButtonsActive(false);
+            setButtonsAreActive(false);
         }
 
         if (project.getActivityTypes() != null && !project.getActivityTypes().isEmpty()) {
@@ -202,7 +203,7 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
 
             onActivityTypeClick(project.getActivityTypes().get(0));
         } else {
-            setButtonsActive(false);
+            setButtonsAreActive(false);
         }
 
         getPresenter().onProjectClick(project);
@@ -253,20 +254,18 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
         }
     }
 
-    public void setButtonsActive(boolean isActive) {
-        confirmButton.setAlpha(isActive ? 1 : 0.5f);
-        confirmButton.setClickable(isActive);
+    public void setButtonsAreActive(boolean active) {
+        UiUtils.setButtonEnabled(confirmButton, active);
+        UiUtils.setButtonEnabled(deleteButton, active);
 
-        deleteButton.setAlpha(isActive ? 1 : 0.5f);
-        deleteButton.setClickable(isActive);
     }
 
-    public void setButtonForEdit(boolean isForEdit) {
-        confirmButton.setText(isForEdit ?
+    public void setButtonsAreForEdit(boolean forEdit) {
+        confirmButton.setText(forEdit ?
                 getContext().getString(R.string.dialog_time_entry_save_button_text) :
                 getContext().getString(R.string.dialog_time_entry_add_button_text));
 
-        deleteButton.setVisibility(isForEdit ? View.VISIBLE : View.GONE);
+        deleteButton.setVisibility(forEdit ? View.VISIBLE : View.GONE);
     }
 
     @OnClick(R.id.confirmButton)

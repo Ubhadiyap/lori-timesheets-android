@@ -13,13 +13,13 @@ import java.util.Calendar;
 public class DayFragmentStylist {
 
     private static final int[] WEEK_AND_MONTH_DAY_LABEL_PATTERNS = new int[] {
-            R.string.mondayPattern,
-            R.string.tuesdayPattern,
-            R.string.wednesdayPattern,
-            R.string.thursdayPattern,
-            R.string.fridayPattern,
-            R.string.saturdayPattern,
-            R.string.sundayPattern
+            R.string.monday_pattern,
+            R.string.tuesday_pattern,
+            R.string.wednesday_pattern,
+            R.string.thursday_pattern,
+            R.string.friday_pattern,
+            R.string.saturday_pattern,
+            R.string.sunday_pattern
     };
 
     private static final int[] HEADER_BACKGROUND_COLORS = new int[] {

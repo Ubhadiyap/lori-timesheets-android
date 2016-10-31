@@ -7,7 +7,7 @@ Mainly, the application consists of two screens - a week overview screen and a t
 
 <img src="https://raw.githubusercontent.com/artemik/lori-timesheets-android/master/demo/main-screenshot.JPG" width="300"> <img src="https://raw.githubusercontent.com/artemik/lori-timesheets-android/master/demo/main-screenshot-adding.JPG" width="300">
 
-The server API is not ready yet, so for demonstration purposes, the application starts a **local mock server** inside Android, to which network requests are issued. Also, login screen is omitted and authentication is not engaged at the moment.
+The application uses Cuba REST API to query the server.
 
 While building the application, it was kept in mind that view/add/edit/remove actions should require as less movements as possible, be at convenient and expected positions on the screen.
 

@@ -7,9 +7,7 @@ import java.util.List;
  */
 public class Project extends BaseEntity {
     private String name;
-
     private List<Task> tasks;
-
     private List<ActivityType> activityTypes;
 
     public String getName() {

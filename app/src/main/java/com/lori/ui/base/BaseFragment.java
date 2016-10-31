@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.lori.R;
 import com.lori.core.app.util.Injector;
 import icepick.Icepick;
 import nucleus.factory.PresenterFactory;
@@ -46,5 +47,9 @@ public class BaseFragment<P extends Presenter> extends NucleusSupportFragment<P>
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    public void showNetworkError() {
+        ((BaseActivity)getActivity()).showToast(getString(R.string.error_network));
     }
 }

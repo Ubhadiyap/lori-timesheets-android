@@ -2,7 +2,6 @@ package com.lori.core.app;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import com.lori.core.service.TimeEntryService;
 import dagger.Module;
 import dagger.Provides;
 import org.greenrobot.eventbus.EventBus;
@@ -23,6 +22,12 @@ public class AppModule {
 
     @Provides
     @Singleton
+    App app() {
+        return app;
+    }
+
+    @Provides
+    @Singleton
     SharedPreferences provideSharedPreferences() {
         return app.getSharedPreferences("settings", 0);
     }
@@ -37,11 +42,5 @@ public class AppModule {
     @Singleton
     Context context() {
         return app.getApplicationContext();
-    }
-
-    @Provides
-    @Singleton
-    TimeEntryService timeEntryService() {
-        return new TimeEntryService();
     }
 }

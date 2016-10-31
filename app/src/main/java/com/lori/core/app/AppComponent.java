@@ -1,10 +1,8 @@
 package com.lori.core.app;
 
+import com.lori.ui.activity.LauncherActivity;
 import com.lori.ui.activity.WeekActivity;
-import com.lori.ui.presenter.DayFragmentPresenter;
-import com.lori.ui.presenter.TimeEntryEditDialogPresenter;
-import com.lori.ui.presenter.WeekFragmentPresenter;
-import com.lori.ui.presenter.WeekTotalFragmentPresenter;
+import com.lori.ui.presenter.*;
 import dagger.Component;
 
 import javax.inject.Singleton;
@@ -16,8 +14,16 @@ import javax.inject.Singleton;
 @Component(modules = {AppModule.class})
 public interface AppComponent {
     void inject(WeekActivity x);
+
+    void inject(LauncherActivity x);
+
     void inject(WeekFragmentPresenter x);
+
     void inject(WeekTotalFragmentPresenter x);
+
     void inject(DayFragmentPresenter x);
+
     void inject(TimeEntryEditDialogPresenter x);
+
+    void inject(LoginActivityPresenter x);
 }

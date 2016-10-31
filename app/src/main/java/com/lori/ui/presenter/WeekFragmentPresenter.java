@@ -21,6 +21,7 @@ public class WeekFragmentPresenter extends BasePresenter<WeekFragment> {
     private static final String TAG = WeekFragmentPresenter.class.getSimpleName();
 
     private static final int LOAD_WEEK_TIME_ENTRIES = 0;
+
     private static final int NUMBER_OF_DAYS_IN_WEEK = 7;
 
     @Inject
@@ -28,43 +29,41 @@ public class WeekFragmentPresenter extends BasePresenter<WeekFragment> {
 
     private Calendar mondayDate;
 
+    @Override
+    protected void onCreate(Bundle savedState) {
+        super.onCreate(savedState);
+
+        restartableFirstAsync(LOAD_WEEK_TIME_ENTRIES,
+                () -> timeEntryService.loadWeekTimeEntries(mondayDate)
+                        .observeOn(mainThread()),
+                (weekFragment, timeEntries) -> {
+                    Calendar sundayDate = ((Calendar) mondayDate.clone());
+                    sundayDate.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS_IN_WEEK - 1);
+
+                    eventBus.post(new MultipleDaysUpdateEvent(timeEntries, mondayDate, sundayDate));
+                },
+                (weekFragment, throwable) -> {
+                    Log.e(TAG, "Failed to load week time entries", throwable);
+                    weekFragment.showNetworkError();
+                });
+    }
 
     public void setMondayDate(Calendar mondayDate) {
         this.mondayDate = mondayDate;
         start(LOAD_WEEK_TIME_ENTRIES);
     }
 
-    @Override
-    protected void onCreate(Bundle savedState) {
-        super.onCreate(savedState);
-
-        restartableReplay(LOAD_WEEK_TIME_ENTRIES,
-                () -> timeEntryService.loadTimeEntries(mondayDate)
-                        .observeOn(mainThread()),
-                (weekFragment, timeEntries) -> {
-                    final Calendar sundayDate = ((Calendar) mondayDate.clone());
-                    sundayDate.add(Calendar.DAY_OF_MONTH, NUMBER_OF_DAYS_IN_WEEK - 1);
-
-                    eventBus.post(new MultipleDaysUpdateEvent(timeEntries, mondayDate, sundayDate));
-                },
-                (weekFragment, throwable) -> Log.e(TAG, "Failed to load week time entries.", throwable));
+    public void onFragmentVisibilityToUserChanged(boolean visible) {
+        if (visible) {
+            setToolbarTitleToCurrentMondayDate();
+        }
     }
 
-    public void onMenuVisibilitySet(boolean visible) {
-        if (!visible) {
-            return;
-        }
+    private void setToolbarTitleToCurrentMondayDate() {
+        String monthName = DateHelper.getMonthName(mondayDate, getView().getContext());
+        getView().getActivity().setTitle(monthName);
 
-        add(view()
-                .filter(weekFragment -> weekFragment != null)
-                .take(1)
-                .subscribe(weekFragment -> {
-                    String monthName = DateHelper.getMonthName(mondayDate, weekFragment.getContext());
-                    weekFragment.getActivity().setTitle(monthName);
-
-                    int year = mondayDate.get(Calendar.YEAR);
-                    ((AppCompatActivity) weekFragment.getActivity()).getSupportActionBar().setSubtitle(String.valueOf(year));
-                })
-        );
+        int year = mondayDate.get(Calendar.YEAR);
+        ((AppCompatActivity) getView().getActivity()).getSupportActionBar().setSubtitle(String.valueOf(year));
     }
 }

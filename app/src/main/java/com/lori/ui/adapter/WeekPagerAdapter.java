@@ -14,8 +14,7 @@ import java.util.Calendar;
  */
 public class WeekPagerAdapter extends FragmentPagerAdapter {
 
-    //private final int count = 16;
-    private final int count = 3;
+    private final int count = 3; //TODO: unlimited fragment loading
     private final int middlePosition = count / 2;
 
     public WeekPagerAdapter(FragmentManager fragmentManager) {

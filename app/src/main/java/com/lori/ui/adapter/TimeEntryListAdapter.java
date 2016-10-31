@@ -98,7 +98,7 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
 
         TimeEntry entry = entries.get(i);
 
-        Integer minutesSpent = entry.getMinutesSpent();
+        Integer minutesSpent = entry.getTimeInMinutes();
         int hoursSpent = minutesSpent / 60;
         int minutesInHourSpent = minutesSpent % 60;
 
@@ -107,7 +107,7 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
 
         viewHolder.taskTextView.setText(entry.getTask().getName());
 
-        String projectAndActivityText = String.format("%s (%s)", entry.getProject().getName(), entry.getActivityType().getName());
+        String projectAndActivityText = String.format("%s (%s)", entry.getTask().getProject().getName(), entry.getActivityType().getName());
         viewHolder.projectAndActivityTextView.setText(projectAndActivityText);
 
         viewHolder.rippleView.setOnClickListener(v -> {

@@ -1,31 +1,33 @@
 package com.lori.core.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import java.util.Date;
+
+import static com.lori.core.gate.lori.LoriGate.DATE_FORMAT;
 
 /**
  * @author artemik
  */
 public class TimeEntry extends BaseEntity {
+    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonSerialize
     private Date date;
-    private Project project;
     private Task task;
     private ActivityType activityType;
-    private Integer minutesSpent;
+    private Integer timeInMinutes;
+
+    public TimeEntry() {
+    }
 
     public Date getDate() {
         return date;
     }
 
+    @JsonFormat(pattern = DATE_FORMAT)
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public Project getProject() {
-        return project;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
     }
 
     public Task getTask() {
@@ -36,19 +38,19 @@ public class TimeEntry extends BaseEntity {
         this.task = task;
     }
 
+    public Integer getTimeInMinutes() {
+        return timeInMinutes;
+    }
+
+    public void setTimeInMinutes(Integer timeInMinutes) {
+        this.timeInMinutes = timeInMinutes;
+    }
+
     public ActivityType getActivityType() {
         return activityType;
     }
 
     public void setActivityType(ActivityType activityType) {
         this.activityType = activityType;
-    }
-
-    public Integer getMinutesSpent() {
-        return minutesSpent;
-    }
-
-    public void setMinutesSpent(Integer minutesSpent) {
-        this.minutesSpent = minutesSpent;
     }
 }

@@ -4,8 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import com.lori.R;
 import com.lori.core.app.util.Injector;
 import icepick.Icepick;
 import nucleus.factory.PresenterFactory;
@@ -52,5 +54,13 @@ public abstract class BaseBottomSheetDialog<P extends Presenter> extends Nucleus
     public void onStop() {
         super.onStop();
         unbinder.unbind();
+    }
+
+    public void showToast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+    }
+
+    public void showNetworkError() {
+        showToast(getContext().getString(R.string.error_network));
     }
 }

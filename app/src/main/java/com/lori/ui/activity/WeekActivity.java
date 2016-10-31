@@ -7,7 +7,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import butterknife.BindView;
 import com.lori.R;
-import com.lori.core.app.util.Injector;
 import com.lori.ui.adapter.WeekPagerAdapter;
 import com.lori.ui.base.BaseActivity;
 
@@ -23,13 +22,13 @@ public class WeekActivity extends BaseActivity {
     ViewPager weekPager;
 
     @Override
-    protected int getContentViewId() {
+    protected Integer getContentViewId() {
         return R.layout.activity_week;
     }
 
     @Override
     protected void onContentViewSet() {
-        ((Injector) getApplication()).inject(this);
+        inject();
 
         setSupportActionBar(toolbar);
 

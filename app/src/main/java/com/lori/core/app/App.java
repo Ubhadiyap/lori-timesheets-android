@@ -1,14 +1,13 @@
 package com.lori.core.app;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 import com.lori.core.app.util.ComponentReflectionInjector;
 import com.lori.core.app.util.Injector;
-import com.lori.core.gate.lori.retrofit.MockLoriServer;
 
 /**
  * @author artemik
  */
-public class App extends Application implements Injector {
+public class App extends MultiDexApplication implements Injector {
 
     private ComponentReflectionInjector<AppComponent> injector;
 
@@ -19,8 +18,6 @@ public class App extends Application implements Injector {
                 .appModule(new AppModule(this))
                 .build();
         injector = new ComponentReflectionInjector<>(AppComponent.class, component);
-
-        MockLoriServer.setup();
     }
 
     @Override

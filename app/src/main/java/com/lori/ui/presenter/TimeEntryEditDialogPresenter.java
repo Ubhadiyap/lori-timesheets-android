@@ -1,6 +1,7 @@
 package com.lori.ui.presenter;
 
 import android.os.Bundle;
+import android.util.Log;
 import com.lori.core.entity.ActivityType;
 import com.lori.core.entity.Project;
 import com.lori.core.entity.Task;
@@ -20,6 +21,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
  * @author artemik
  */
 public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDialog> {
+    private static final String TAG = TimeEntryEditDialogPresenter.class.getSimpleName();
 
     private static final int LOAD_AVAILABLE_PROJECTS = 0;
 
@@ -39,25 +41,40 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        restartableReplay(LOAD_AVAILABLE_PROJECTS, () -> timeEntryService.loadAvailableProjects()
+        restartableFirstAsync(LOAD_AVAILABLE_PROJECTS,
+                () -> timeEntryService.loadAvailableProjects()
                         .observeOn(mainThread()),
-                (editTimeEntryDialog, projects) -> {
-                    editTimeEntryDialog.setAvailableProjects(projects);
+                (view, projects) -> {
+                    view.setAvailableProjects(projects);
                     if (timeEntryToEdit != null) {
-                        editTimeEntryDialog.setSelectedProject(timeEntryToEdit.getProject());
-                        editTimeEntryDialog.setSelectedTask(timeEntryToEdit.getTask());
-                        editTimeEntryDialog.setSelectedActivityType(timeEntryToEdit.getActivityType());
 
-                        int minutesSpent = timeEntryToEdit.getMinutesSpent();
-                        editTimeEntryDialog.setSelectedHour(minutesSpent / 60);
-                        editTimeEntryDialog.setSelectedMinute(minutesSpent % 60);
-                        editTimeEntryDialog.setButtonForEdit(true);
+                        // Available project contains all loaded tasks and activity types, need to use it,
+                        // instead of timeEntryToEdit.task.project.
+                        Project timeEntryToEditProject = null;
+                        for (Project project : projects) {
+                            if (project.getId().equals(timeEntryToEdit.getTask().getProject().getId())) {
+                                timeEntryToEditProject = project;
+                            }
+                        }
+                        view.setSelectedProject(timeEntryToEditProject);
+
+                        view.setSelectedTask(timeEntryToEdit.getTask());
+
+                        view.setSelectedActivityType(timeEntryToEdit.getActivityType());
+
+                        int minutesSpent = timeEntryToEdit.getTimeInMinutes();
+                        view.setSelectedHour(minutesSpent / 60);
+                        view.setSelectedMinute(minutesSpent % 60);
+                        view.setButtonsAreForEdit(true);
                     } else {
-                        editTimeEntryDialog.setSelectedHour(4);
-                        editTimeEntryDialog.setSelectedMinute(0);
+                        view.setSelectedHour(4);
+                        view.setSelectedMinute(0);
                     }
                 },
-                null);
+                (editTimeEntryDialog, throwable) -> {
+                    Log.e(TAG, "Failed to load available projects when creating edit dialog", throwable);
+                    editTimeEntryDialog.showNetworkError();
+                });
 
         start(LOAD_AVAILABLE_PROJECTS);
     }
@@ -83,62 +100,75 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
     }
 
     public void onConfirmButtonClick() {
-        getView().setButtonsActive(false);
+        getView().setButtonsAreActive(false);
 
-        TimeEntry previousTimeEntry = null;
-        if (timeEntryToEdit == null) {
-            timeEntryToEdit = new TimeEntry();
-        } else {
-            previousTimeEntry = new TimeEntry();
-            previousTimeEntry.setDate(timeEntryToEdit.getDate());
-            previousTimeEntry.setProject(timeEntryToEdit.getProject());
-            previousTimeEntry.setTask(timeEntryToEdit.getTask());
-            previousTimeEntry.setActivityType(timeEntryToEdit.getActivityType());
-            previousTimeEntry.setMinutesSpent(timeEntryToEdit.getMinutesSpent());
+        final TimeEntry beforeCommitTimeEntryState = isEditing() ? getCopy(timeEntryToEdit) : null;
+
+        TimeEntry timeEntryToCommit = isEditing() ? timeEntryToEdit : new TimeEntry();
+        if (!isEditing()) {
+            timeEntryToCommit.setId(UUID.randomUUID());
         }
+        timeEntryToCommit.setDate(dayDate.getTime());
 
-        timeEntryToEdit.setId(UUID.randomUUID());
-        timeEntryToEdit.setDate(dayDate.getTime());
-        timeEntryToEdit.setProject(chosenProject);
-        timeEntryToEdit.setTask(chosenTask);
-        timeEntryToEdit.setActivityType(chosenActivityType);
-        timeEntryToEdit.setMinutesSpent(chosenHour * 60 + chosenMinutes);
+        chosenTask.setProject(copyChosenProject());
+        timeEntryToCommit.setTask(chosenTask);
 
-        final TimeEntry finalPreviousTimeEntry = previousTimeEntry;
+        timeEntryToCommit.setActivityType(chosenActivityType);
+        timeEntryToCommit.setTimeInMinutes(chosenHour * 60 + chosenMinutes);
 
-        add(timeEntryService.saveTimeEntry(timeEntryToEdit)
-                .observeOn(mainThread())
-                .subscribe(isSuccessful ->
-                        view().filter(editTimeEntryDialog -> editTimeEntryDialog != null)
-                                .take(1)
-                                .subscribe(editTimeEntryDialog -> {
-                                    editTimeEntryDialog.dismiss();
-                                    editTimeEntryDialog.setOnDismissListener(dialog -> {
-                                        if (finalPreviousTimeEntry != null) {
-                                            eventBus.post(TimeEntryChangedEvent.changed(timeEntryToEdit, finalPreviousTimeEntry));
-                                        } else {
-                                            eventBus.post(TimeEntryChangedEvent.added(timeEntryToEdit));
-                                        }
-                                    });
-                                }))
-        );
+        first(() -> (isEditing() ? timeEntryService.updateTimeEntry(timeEntryToCommit) : timeEntryService.saveTimeEntry(timeEntryToCommit))
+                        .observeOn(mainThread()),
+                (dialog, timeEntry) -> {
+                    dialog.setOnDismissListener(dialog1 -> {
+                        if (isEditing()) {
+                            eventBus.post(TimeEntryChangedEvent.changed(timeEntryToCommit, beforeCommitTimeEntryState));
+                        } else {
+                            eventBus.post(TimeEntryChangedEvent.added(timeEntryToCommit));
+                        }
+                    });
+                    dialog.dismiss();
+                },
+                (dialog, throwable) -> {
+                    dialog.showNetworkError();
+                    Log.d(TAG, "Couldn't commit time entry: " + timeEntryToCommit);
+                });
+    }
+
+    private Project copyChosenProject() {
+        Project copy = new Project();
+        copy.setId(chosenProject.getId());
+        copy.setName(chosenProject.getName());
+        return copy;
+    }
+
+    private boolean isEditing() {
+        return timeEntryToEdit != null;
+    }
+
+    private TimeEntry getCopy(TimeEntry timeEntry) {
+        TimeEntry copy = new TimeEntry();
+        copy.setDate(timeEntry.getDate());
+        copy.setTask(timeEntry.getTask());
+        copy.setActivityType(timeEntry.getActivityType());
+        copy.setTimeInMinutes(timeEntry.getTimeInMinutes());
+        return copy;
     }
 
     public void onDeleteButtonClick() {
-        getView().setButtonsActive(false);
+        getView().setButtonsAreActive(false);
 
-        add(timeEntryService.deleteTimeEntry(timeEntryToEdit)
-                .observeOn(mainThread())
-                .subscribe(isSuccessful ->
-                        view().filter(editTimeEntryDialog -> editTimeEntryDialog != null)
-                                .take(1)
-                                .subscribe(editTimeEntryDialog -> {
-                                    editTimeEntryDialog.dismiss();
-                                    editTimeEntryDialog.setOnDismissListener(dialog -> {
-                                        eventBus.post(TimeEntryChangedEvent.removed(timeEntryToEdit));
-                                    });
-                                }))
-        );
+        first(() -> timeEntryService.removeTimeEntry(timeEntryToEdit)
+                        .observeOn(mainThread()),
+                (dialog, timeEntry) -> {
+                    dialog.setOnDismissListener(dialog1 -> {
+                        eventBus.post(TimeEntryChangedEvent.removed(timeEntryToEdit));
+                    });
+                    dialog.dismiss();
+                },
+                (dialog, throwable) -> {
+                    dialog.showNetworkError();
+                    Log.d(TAG, "Couldn't remove time entry: " + timeEntryToEdit);
+                });
     }
 
     public void setDayDate(Calendar dayDate) {

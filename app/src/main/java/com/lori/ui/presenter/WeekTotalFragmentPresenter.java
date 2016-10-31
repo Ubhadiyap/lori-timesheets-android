@@ -19,7 +19,7 @@ public class WeekTotalFragmentPresenter extends BasePresenter<WeekTotalFragment>
     private static final String TAG = WeekTotalFragmentPresenter.class.getSimpleName();
 
     private Calendar mondayDate;
-    int totalWeekMinutesSpent;
+    private int totalWeekMinutesSpent;
 
     @Override
     protected void onCreate(Bundle savedState) {
@@ -55,14 +55,14 @@ public class WeekTotalFragmentPresenter extends BasePresenter<WeekTotalFragment>
 
         switch (event.getEventType()) {
             case ADDED:
-                totalWeekMinutesSpent += timeEntry.getMinutesSpent();
+                totalWeekMinutesSpent += timeEntry.getTimeInMinutes();
                 break;
             case CHANGED:
-                totalWeekMinutesSpent -= event.getPreviousTimeEntry().getMinutesSpent();
-                totalWeekMinutesSpent += timeEntry.getMinutesSpent();
+                totalWeekMinutesSpent -= event.getPreviousTimeEntry().getTimeInMinutes();
+                totalWeekMinutesSpent += timeEntry.getTimeInMinutes();
                 break;
             case REMOVED:
-                totalWeekMinutesSpent -= timeEntry.getMinutesSpent();
+                totalWeekMinutesSpent -= timeEntry.getTimeInMinutes();
                 break;
         }
         updateUiTotalWeekMinutesSpent();
@@ -82,7 +82,7 @@ public class WeekTotalFragmentPresenter extends BasePresenter<WeekTotalFragment>
         List<TimeEntry> allDayEntries = event.getAllTimeEntries(dayDate);
         if (allDayEntries != null) {
             for (TimeEntry entry : allDayEntries) {
-                totalDayMinutesSpent += entry.getMinutesSpent();
+                totalDayMinutesSpent += entry.getTimeInMinutes();
             }
         }
 

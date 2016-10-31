@@ -24,7 +24,7 @@ public class WeekFragment extends BaseFragment<WeekFragmentPresenter> {
 
     private Calendar mondayDate;
 
-    private boolean isMenuVisible;
+    private boolean menuVisible;
 
     public WeekFragment() {
     }
@@ -36,25 +36,6 @@ public class WeekFragment extends BaseFragment<WeekFragmentPresenter> {
         WeekFragment fragment = new WeekFragment();
         fragment.setArguments(bundle);
         return fragment;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        getPresenter().onMenuVisibilitySet(isMenuVisible);
-    }
-
-    @Override
-    public void setMenuVisibility(boolean menuVisible) {
-        super.setMenuVisibility(menuVisible);
-        isMenuVisible = menuVisible;
-
-        // Workaround to update toolbar title.
-        // The values is saved and either will be updated later during resume,
-        // or here straightaway.
-        if (isResumed()) {
-            getPresenter().onMenuVisibilitySet(isMenuVisible);
-        }
     }
 
     @Override
@@ -77,7 +58,7 @@ public class WeekFragment extends BaseFragment<WeekFragmentPresenter> {
         super.onViewCreated(view, savedInstanceState);
 
         FragmentTransaction tx = getChildFragmentManager().beginTransaction();
-        tx.add(R.id.fragmentMonday, createDayFragment(0, mondayDate));
+        tx.add(R.id.fragmentMonday, createDayFragment(0, mondayDate)); // 0 - day of week.
         tx.add(R.id.fragmentTuesday, createDayFragment(1, mondayDate));
         tx.add(R.id.fragmentWednesday, createDayFragment(2, mondayDate));
         tx.add(R.id.fragmentThursday, createDayFragment(3, mondayDate));
@@ -86,6 +67,32 @@ public class WeekFragment extends BaseFragment<WeekFragmentPresenter> {
         tx.add(R.id.fragmentSunday, createDayFragment(6, mondayDate));
         tx.add(R.id.fragmentWeekTotal, createWeekTotalFragment(mondayDate));
         tx.commit();
+    }
+
+    /**
+     * Sets if the fragment is visible to the user.
+     * This method may be called BEFORE the fragment's onCreate() is invoked, so presenter may be not constructed at the
+     * time, therefore:
+     * - if that's the case, the value is saved only to be used later from onResume();
+     * - otherwise it's called after activity's become resumed, which means onResume() won't be called, so the value is
+     * propagated to the presenter at once.
+     *
+     * Such behavior guarantees the presenter is notified about fragments visibility when the fragment being resumed.
+     */
+    @Override
+    public void setMenuVisibility(boolean menuVisible) {
+        super.setMenuVisibility(menuVisible);
+        this.menuVisible = menuVisible;
+
+        if (isResumed()) {
+            getPresenter().onFragmentVisibilityToUserChanged(this.menuVisible);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPresenter().onFragmentVisibilityToUserChanged(menuVisible);
     }
 
     private DayFragment createDayFragment(int dayOfWeekOffset, Calendar mondayDate) {

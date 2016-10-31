@@ -18,8 +18,11 @@ import java.util.List;
 public class DayFragmentPresenter extends BasePresenter<DayFragment> {
     private static final String TAG = DayFragmentPresenter.class.getSimpleName();
 
+    private static final int UPDATE_TIME_ENTRIES = 0;
+
     private Calendar dayDate;
-    int totalMinutesSpent;
+    private int totalMinutesSpent;
+    private List<TimeEntry> allDayTimeEntries;
 
     public void setDayDate(Calendar dayDate) {
         this.dayDate = dayDate;
@@ -29,25 +32,27 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
         eventBus.register(this);
+
+        restartable(UPDATE_TIME_ENTRIES, fragment -> {
+            fragment.setTimeEntries(allDayTimeEntries);
+            fragment.setTotalMinutesSpent(totalMinutesSpent);
+        });
     }
 
     @Subscribe
     public void onMultipleDaysUpdate(MultipleDaysUpdateEvent event) {
-        List<TimeEntry> allDayEntries = event.getAllTimeEntries(dayDate);
-
-        if (allDayEntries != null) {
-            totalMinutesSpent = 0;
-            for (TimeEntry entry : allDayEntries) {
-                totalMinutesSpent += entry.getMinutesSpent();
-            }
-
-            view().filter(fragment -> fragment != null)
-                    .take(1)
-                    .subscribe(fragment -> {
-                        fragment.setTimeEntries(allDayEntries);
-                        fragment.setTotalMinutesSpent(totalMinutesSpent);
-                    });
+        if (!event.isDayInRange(dayDate)) {
+            return;
         }
+
+        allDayTimeEntries = event.getAllTimeEntries(dayDate);
+
+        totalMinutesSpent = 0;
+        for (TimeEntry timeEntry : allDayTimeEntries) {
+            totalMinutesSpent += toInt(timeEntry.getTimeInMinutes());
+        }
+
+        start(UPDATE_TIME_ENTRIES);
     }
 
     @Subscribe
@@ -60,7 +65,7 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
 
         switch (event.getEventType()) {
             case ADDED:
-                totalMinutesSpent += timeEntry.getMinutesSpent();
+                totalMinutesSpent += timeEntry.getTimeInMinutes();
                 add(view().filter(fragment -> fragment != null)
                         .take(1)
                         .subscribe(fragment -> {
@@ -70,8 +75,8 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
                 );
                 break;
             case CHANGED:
-                totalMinutesSpent -= event.getPreviousTimeEntry().getMinutesSpent();
-                totalMinutesSpent += timeEntry.getMinutesSpent();
+                totalMinutesSpent -= event.getPreviousTimeEntry().getTimeInMinutes();
+                totalMinutesSpent += timeEntry.getTimeInMinutes();
                 add(view().filter(fragment -> fragment != null)
                         .take(1)
                         .subscribe(fragment -> {
@@ -81,7 +86,7 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
                 );
                 break;
             case REMOVED:
-                totalMinutesSpent -= timeEntry.getMinutesSpent();
+                totalMinutesSpent -= timeEntry.getTimeInMinutes();
                 add(view().filter(fragment -> fragment != null)
                         .take(1)
                         .subscribe(fragment -> {
@@ -91,5 +96,9 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
                 );
                 break;
         }
+    }
+
+    private int toInt(Integer integer) {
+        return integer != null ? integer : 0;
     }
 }

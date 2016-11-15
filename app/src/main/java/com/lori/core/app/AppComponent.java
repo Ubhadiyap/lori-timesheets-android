@@ -26,4 +26,8 @@ public interface AppComponent {
     void inject(TimeEntryEditDialogPresenter x);
 
     void inject(LoginActivityPresenter x);
+
+    void inject(WeekActivityPresenter x);
+
+    void inject(LauncherActivityPresenter x);
 }

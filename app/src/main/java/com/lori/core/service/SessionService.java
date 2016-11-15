@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lori.core.app.App;
 import com.lori.core.entity.User;
+import com.lori.core.gate.lori.exception.LoriAuthenticationException;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -32,10 +33,6 @@ public class SessionService {
     public SessionService() {
     }
 
-    public boolean isAuthenticated() {
-        return getSession() != null; //TODO: session may be expired already.
-    }
-
     public void setServerUrl(String serverUrl) {
         putToPreferences(SERVER_URL_KEY, serverUrl);
     }
@@ -48,9 +45,29 @@ public class SessionService {
         putToPreferences(SESSION_KEY, session == null ? null : session.toString());
     }
 
+    public void clearSession() {
+        setSession(null);
+        setUser(null);
+        setServerUrl(null);
+    }
+
+    public boolean hasSession() {
+        return getSession() != null &&
+                getUser() != null &&
+                getServerUrl() != null;
+    }
+
     public UUID getSession() {
         String session = readFromPreferences(SESSION_KEY);
         return session == null ? null : UUID.fromString(session);
+    }
+
+    public UUID getSessionEx() throws LoriAuthenticationException {
+        UUID session = getSession();
+        if (session == null) {
+            throw new LoriAuthenticationException("No session");
+        }
+        return session;
     }
 
     public User getUser() {

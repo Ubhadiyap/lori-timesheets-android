@@ -1,13 +1,11 @@
 package com.lori.ui.presenter;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import com.lori.core.gate.lori.LoriGate;
+import com.lori.core.gate.lori.exception.LoriAuthenticationException;
 import com.lori.core.service.LoginService;
-import com.lori.core.service.exception.AuthenticationException;
 import com.lori.ui.activity.LoginActivity;
-import com.lori.ui.activity.WeekActivity;
 import com.lori.ui.base.BasePresenter;
 import hugo.weaving.DebugLog;
 import org.apache.commons.lang3.StringUtils;
@@ -41,19 +39,14 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
         restartableFirstAsync(LOGIN_REQUEST,
                 () -> loginService.login(typedLogin, typedPassword, typedServerUrl)
                         .observeOn(mainThread()),
-                (loginActivity, user) -> {
-                    Intent intent = new Intent(loginActivity, WeekActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    loginActivity.finish();
-                    loginActivity.startActivity(intent);
-                },
+                (loginActivity, user) -> loginActivity.onBackPressed(),
                 (loginActivity, throwable) -> {
-                    if (throwable instanceof AuthenticationException) {
+                    if (throwable instanceof LoriAuthenticationException) {
                         loginActivity.showCredentialsAreIncorrect();
                     } else {
                         loginActivity.showNetworkError();
                     }
-                    loginActivity.setSignInButtonEnabled(false);
+                    loginActivity.setSignInButtonEnabled(true);
                 });
     }
 
@@ -94,5 +87,10 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
 
     private boolean isServerUrlValid(String serverUrl) {
         return Patterns.WEB_URL.matcher(serverUrl).matches();
+    }
+
+    public boolean onBackPressed() {
+        loginService.onLoginActivityClosed();
+        return true;
     }
 }

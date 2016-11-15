@@ -39,4 +39,6 @@
     <string name="error_network">Couldn\'t connect to or received an error from the server</string>
     <string name="prompt_server_url">Server url</string>
     <string name="error_invalid_server_url">Server url is invalid</string>
+    <string name="logout_menu_item">Logout</string>
+    <string name="login_required">Login is required for this operation</string>
 </resources>

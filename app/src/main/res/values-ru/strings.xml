@@ -39,4 +39,6 @@
     <string name="error_network">Ошибка при подключении к серверу</string>
     <string name="prompt_server_url">Адрес сервера</string>
     <string name="error_invalid_server_url">Неверный адрес сервера</string>
+    <string name="logout_menu_item">Выйти</string>
+    <string name="login_required">Требуется логин для совершения операции</string>
 </resources>

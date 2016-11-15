@@ -2,7 +2,6 @@ package com.lori.core.gate.lori.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lori.core.entity.TimeEntry;
-import com.lori.core.entity.User;
 import com.lori.core.gate.lori.LoriGate;
 
 import java.math.BigDecimal;
@@ -12,9 +11,11 @@ import java.util.Date;
  * @author artemik
  */
 public class TimeEntryDto extends BaseEntityDto {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = LoriGate.DATE_FORMAT)
     private UserDto user;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = LoriGate.DATE_FORMAT)
     private Date date;
+
     private TaskDto task;
     private Integer timeInMinutes;
     private BigDecimal timeInHours;
@@ -23,18 +24,20 @@ public class TimeEntryDto extends BaseEntityDto {
     public TimeEntryDto() {
     }
 
-    public TimeEntryDto(TimeEntry timeEntry) {
+    public TimeEntryDto(TimeEntry timeEntry, boolean forCommit, boolean isNew) {
         super(timeEntry);
         date = timeEntry.getDate();
-        task = new TaskDto(timeEntry.getTask());
-        timeInMinutes = timeEntry.getTimeInMinutes();
-        timeInHours = BigDecimal.valueOf(timeInMinutes / 60);
-        activityType = new ActivityTypeDto(timeEntry.getActivityType());
-    }
 
-    public TimeEntryDto(User user, TimeEntry timeEntry) {
-        this(timeEntry);
-        this.user = new UserDto(user);
+        task = new TaskDto(timeEntry.getTask());
+        if (forCommit) {
+            task.setProject(null);
+        }
+
+        timeInMinutes = timeEntry.getTimeInMinutes();
+        timeInHours = timeInMinutes == null ? null : BigDecimal.valueOf(timeInMinutes / 60);
+        activityType = new ActivityTypeDto(timeEntry.getActivityType());
+        user = new UserDto(timeEntry.getUser());
+        this.isNew = isNew;
     }
 
     @Override

@@ -93,5 +93,12 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> {
     public void setSignInButtonEnabled(boolean enabled) {
         UiUtils.setButtonEnabled(signInButton, enabled);
     }
+
+    @Override
+    public void onBackPressed() {
+        if (getPresenter().onBackPressed()) {
+            super.onBackPressed();
+        }
+    }
 }
 

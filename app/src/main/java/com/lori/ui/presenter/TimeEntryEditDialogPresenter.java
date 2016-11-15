@@ -2,12 +2,14 @@ package com.lori.ui.presenter;
 
 import android.os.Bundle;
 import android.util.Log;
+import com.lori.R;
 import com.lori.core.entity.ActivityType;
 import com.lori.core.entity.Project;
 import com.lori.core.entity.Task;
 import com.lori.core.entity.TimeEntry;
 import com.lori.core.event.TimeEntryChangedEvent;
 import com.lori.core.service.TimeEntryService;
+import com.lori.core.service.exception.UserCancelledLoginException;
 import com.lori.ui.base.BasePresenter;
 import com.lori.ui.dialog.EditTimeEntryDialog;
 
@@ -73,7 +75,11 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                 },
                 (editTimeEntryDialog, throwable) -> {
                     Log.e(TAG, "Failed to load available projects when creating edit dialog", throwable);
-                    editTimeEntryDialog.showNetworkError();
+                    if (throwable instanceof UserCancelledLoginException) {
+                        editTimeEntryDialog.showToast(R.string.login_required);
+                    } else {
+                        editTimeEntryDialog.showNetworkError();
+                    }
                 });
 
         start(LOAD_AVAILABLE_PROJECTS);
@@ -116,7 +122,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
         timeEntryToCommit.setActivityType(chosenActivityType);
         timeEntryToCommit.setTimeInMinutes(chosenHour * 60 + chosenMinutes);
 
-        first(() -> (isEditing() ? timeEntryService.updateTimeEntry(timeEntryToCommit) : timeEntryService.saveTimeEntry(timeEntryToCommit))
+        first(() -> (isEditing() ? timeEntryService.updatePersonalTimeEntry(timeEntryToCommit) : timeEntryService.savePersonalTimeEntry(timeEntryToCommit))
                         .observeOn(mainThread()),
                 (dialog, timeEntry) -> {
                     dialog.setOnDismissListener(dialog1 -> {
@@ -129,8 +135,12 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                     dialog.dismiss();
                 },
                 (dialog, throwable) -> {
-                    dialog.showNetworkError();
                     Log.d(TAG, "Couldn't commit time entry: " + timeEntryToCommit);
+                    if (throwable instanceof UserCancelledLoginException) {
+                        dialog.showToast(R.string.login_required);
+                    } else {
+                        dialog.showNetworkError();
+                    }
                 });
     }
 
@@ -166,8 +176,12 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                     dialog.dismiss();
                 },
                 (dialog, throwable) -> {
-                    dialog.showNetworkError();
                     Log.d(TAG, "Couldn't remove time entry: " + timeEntryToEdit);
+                    if (throwable instanceof UserCancelledLoginException) {
+                        dialog.showToast(R.string.login_required);
+                    } else {
+                        dialog.showNetworkError();
+                    }
                 });
     }
 

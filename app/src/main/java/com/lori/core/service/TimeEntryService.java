@@ -2,9 +2,10 @@ package com.lori.core.service;
 
 import com.lori.core.entity.Project;
 import com.lori.core.entity.TimeEntry;
-import com.lori.core.entity.User;
 import com.lori.core.gate.lori.LoriGate;
+import com.lori.core.util.Rx;
 import rx.Observable;
+import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
 import javax.inject.Inject;
@@ -20,50 +21,64 @@ public class TimeEntryService {
 
     @Inject
     LoriGate loriGate;
-
     @Inject
     SessionService sessionService;
+    @Inject
+    LoginService loginService;
 
     @Inject
     public TimeEntryService() {
     }
 
-    public Observable<TimeEntry> saveTimeEntry(TimeEntry timeEntry) {
-        return loriGate.commitTimeEntry(sessionService.getUser(), true, timeEntry)
-                .subscribeOn(Schedulers.io())
-                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
-                        null : Observable.just(timeEntries.get(0))
-                );
+    public Observable<TimeEntry> savePersonalTimeEntry(TimeEntry timeEntry) {
+        timeEntry.setUser(sessionService.getUser());
+
+        return withLoginIfBadSession(() ->
+                loriGate.commitTimeEntries(true, timeEntry)
+                        .subscribeOn(Schedulers.io())
+                        .compose(loginService.reloginIfAuthenticationException())
+                        .map(Rx::getFirst)
+        );
     }
 
-    public Observable<TimeEntry> updateTimeEntry(TimeEntry timeEntry) {
+    public Observable<TimeEntry> updatePersonalTimeEntry(TimeEntry timeEntry) {
         //TODO: merge update and save method into one.
-        return loriGate.commitTimeEntry(sessionService.getUser(), false, timeEntry)
-                .subscribeOn(Schedulers.io())
-                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
-                        null : Observable.just(timeEntries.get(0))
-                );
+
+        timeEntry.setUser(sessionService.getUser());
+
+        return withLoginIfBadSession(() ->
+                loriGate.commitTimeEntries(false, timeEntry)
+                        .subscribeOn(Schedulers.io())
+                        .compose(loginService.reloginIfAuthenticationException())
+                        .map(Rx::getFirst)
+        );
     }
 
     public Observable<TimeEntry> removeTimeEntry(TimeEntry timeEntry) {
-        return loriGate.removeTimeEntry(timeEntry)
-                .subscribeOn(Schedulers.io())
-                .flatMap((timeEntries) -> timeEntries == null || timeEntries.size() == 0 ?
-                        null : Observable.just(timeEntries.get(0))
-                );
+        return withLoginIfBadSession(() ->
+                loriGate.removeTimeEntry(timeEntry)
+                        .subscribeOn(Schedulers.io())
+                        .map(Rx::getFirst)
+        );
     }
 
-    public Observable<List<TimeEntry>> loadWeekTimeEntries(Calendar monday) {
+    public Observable<List<TimeEntry>> loadPersonalWeekTimeEntries(Calendar monday) {
         Calendar sunday = (Calendar) monday.clone();
-        sunday.set(Calendar.DAY_OF_WEEK, 1); // Set to sunday.
+        sunday.set(Calendar.DAY_OF_WEEK, 1); // 1 - sunday ordinal.
 
-        User user = sessionService.getUser();
-
-        return loriGate.loadTimeEntries(monday.getTime(), sunday.getTime(), user);
+        return withLoginIfBadSession(() ->
+                loriGate.loadTimeEntries(monday.getTime(), sunday.getTime(), sessionService.getUser())
+        );
     }
 
     public Observable<List<Project>> loadAvailableProjects() {
-        return loriGate.loadAvailableProjects(sessionService.getUser())
-                .subscribeOn(Schedulers.io());
+        return withLoginIfBadSession(() ->
+                loriGate.loadAvailableProjects(sessionService.getUser())
+                        .subscribeOn(Schedulers.io())
+        );
+    }
+
+    private <T> Observable<T> withLoginIfBadSession(Func0<Observable<T>> observableFactory) {
+        return loginService.withLoginIfBadSession(observableFactory);
     }
 }

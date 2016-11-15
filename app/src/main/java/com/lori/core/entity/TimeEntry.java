@@ -1,18 +1,12 @@
 package com.lori.core.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
 import java.util.Date;
-
-import static com.lori.core.gate.lori.LoriGate.DATE_FORMAT;
 
 /**
  * @author artemik
  */
 public class TimeEntry extends BaseEntity {
-    @JsonFormat(pattern = DATE_FORMAT)
-    @JsonSerialize
+    private User user;
     private Date date;
     private Task task;
     private ActivityType activityType;
@@ -21,11 +15,18 @@ public class TimeEntry extends BaseEntity {
     public TimeEntry() {
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     public Date getDate() {
         return date;
     }
 
-    @JsonFormat(pattern = DATE_FORMAT)
     public void setDate(Date date) {
         this.date = date;
     }

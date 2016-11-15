@@ -3,8 +3,10 @@ package com.lori.ui.presenter;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import com.lori.R;
 import com.lori.core.event.MultipleDaysUpdateEvent;
 import com.lori.core.service.TimeEntryService;
+import com.lori.core.service.exception.UserCancelledLoginException;
 import com.lori.ui.base.BasePresenter;
 import com.lori.ui.fragment.WeekFragment;
 import com.lori.ui.util.DateHelper;
@@ -34,7 +36,7 @@ public class WeekFragmentPresenter extends BasePresenter<WeekFragment> {
         super.onCreate(savedState);
 
         restartableFirstAsync(LOAD_WEEK_TIME_ENTRIES,
-                () -> timeEntryService.loadWeekTimeEntries(mondayDate)
+                () -> timeEntryService.loadPersonalWeekTimeEntries(mondayDate)
                         .observeOn(mainThread()),
                 (weekFragment, timeEntries) -> {
                     Calendar sundayDate = ((Calendar) mondayDate.clone());
@@ -44,7 +46,11 @@ public class WeekFragmentPresenter extends BasePresenter<WeekFragment> {
                 },
                 (weekFragment, throwable) -> {
                     Log.e(TAG, "Failed to load week time entries", throwable);
-                    weekFragment.showNetworkError();
+                    if (throwable instanceof UserCancelledLoginException) {
+                        weekFragment.showToast(R.string.login_required);
+                    } else {
+                        weekFragment.showNetworkError();
+                    }
                 });
     }
 

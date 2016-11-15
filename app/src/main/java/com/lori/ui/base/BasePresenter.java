@@ -22,6 +22,8 @@ public class BasePresenter<ViewType> extends RxPresenter<ViewType> {
     @Inject
     public EventBus eventBus;
 
+    private ViewType cachedView;
+
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
@@ -35,12 +37,28 @@ public class BasePresenter<ViewType> extends RxPresenter<ViewType> {
     }
 
     @Override
+    protected void onTakeView(ViewType viewType) {
+        cachedView = viewType; //TODO: move this logic to Presenter. This is for getting view when it's even been dropped.
+        super.onTakeView(viewType);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        cachedView = null;
 
         if (eventBus != null && eventBus.isRegistered(this)) {
             eventBus.unregister(this);
         }
+    }
+
+    /**
+     * Returns view regardless of its state (taken or dropped).
+     * This is needed for operations on view that don't require it being run and shown.
+     */
+    protected ViewType forceGetView() {
+        return cachedView;
     }
 
     /**
@@ -53,6 +71,15 @@ public class BasePresenter<ViewType> extends RxPresenter<ViewType> {
                         .compose(deliverFirst())
                         .subscribe(split(onNext, onError))
         );
+    }
+
+    /**
+     * A non-restartable version that returns nothing.
+     */
+    protected void first(Function<ViewType> function) {
+        add(view().filter(view -> view != null)
+                .take(1)
+                .subscribe(function::call));
     }
 
     /**

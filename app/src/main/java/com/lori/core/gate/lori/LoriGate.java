@@ -14,6 +14,7 @@ import com.lori.core.gate.lori.exception.LoriAuthenticationException;
 import com.lori.core.gate.lori.retrofit.RetrofitLoriService;
 import com.lori.core.gate.lori.retrofit.RetrofitLoriServiceFactory;
 import com.lori.core.service.SessionService;
+import com.lori.core.util.Rx;
 import org.apache.commons.lang3.ObjectUtils;
 import retrofit2.adapter.rxjava.HttpException;
 import rx.Observable;
@@ -57,7 +58,6 @@ public class LoriGate {
         if (savedServerUrl != null) {
             init(sessionService.getServerUrl());
         }
-
     }
 
     public void init(String baseUrl) {
@@ -68,14 +68,7 @@ public class LoriGate {
         return retrofitLoriService.login(login, password)
                 .subscribeOn(Schedulers.io())
                 .map(UUID::fromString)
-                .onErrorResumeNext(throwable -> {
-                    if (throwable instanceof HttpException &&
-                            ((HttpException) throwable).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
-                        return Observable.error(new LoriAuthenticationException(throwable));
-                    } else {
-                        return Observable.error(throwable);
-                    }
-                });
+                .compose(mapErrorsToExceptions());
     }
 
     public Observable<User> loadUserByLogin(String login) {
@@ -83,7 +76,8 @@ public class LoriGate {
 
         return retrofitLoriService.loadUsersByLogin(request)
                 .subscribeOn(Schedulers.io())
-                .map(users -> users.isEmpty() ? null : users.get(0))
+                .compose(mapErrorsToExceptions())
+                .map(Rx::getFirst)
                 .map(this::convertUser);
     }
 
@@ -92,37 +86,38 @@ public class LoriGate {
 
         return retrofitLoriService.loadActiveProjects(new LoadActiveProjectsRequest(userDto))
                 .subscribeOn(Schedulers.io())
+                .compose(mapErrorsToExceptions())
                 .map(ServiceResponse::getResult)
                 .flatMap(Observable::from)
                 .flatMap(
                         (projectDto) -> retrofitLoriService.loadActivityTypesForProject(
                                 new LoadActivityTypesForProjectRequest(projectDto)
-                        ).map(ServiceResponse::getResult),
+                        ).compose(mapErrorsToExceptions())
+                                .map(ServiceResponse::getResult),
                         Pair::new
                 )
-                .sorted((pair, pair2) -> ObjectUtils.compare(pair.first.getName(), pair2.first.getName()))
-                .map(pair -> convertProject(pair.first, pair.second))
+                .sorted((projectAndActivityTypes, projectAndActivityTypes2) ->
+                        ObjectUtils.compare(projectAndActivityTypes.first.getName(), projectAndActivityTypes2.first.getName()))
+                .map(projectAndActivityTypes -> convertProject(projectAndActivityTypes.first, projectAndActivityTypes.second))
                 .toList();
     }
 
-    public Observable<List<TimeEntry>> commitTimeEntry(User user, boolean isNew, TimeEntry... commitInstances) {
+    public Observable<List<TimeEntry>> commitTimeEntries(boolean isNew, TimeEntry... timeEntries) {
         // TODO: make universal commit() method working for any entity.
 
-        if (commitInstances == null || commitInstances.length == 0) {
+        if (timeEntries == null || timeEntries.length == 0) {
             return Observable.empty();
         }
 
         List<TimeEntryDto> timeEntryDtos = new ArrayList<>();
-        for (TimeEntry commitInstance : commitInstances) {
-            TimeEntryDto timeEntryDto = new TimeEntryDto(user, commitInstance);
-            timeEntryDto.setNew(isNew);
-            timeEntryDto.getTask().setProject(null);
-            timeEntryDtos.add(timeEntryDto);
+        for (TimeEntry timeEntry : timeEntries) {
+            timeEntryDtos.add(new TimeEntryDto(timeEntry, true, isNew));
         }
 
         return retrofitLoriService.commitTimeEntry(new CommitRequest<>(timeEntryDtos))
-                .map(this::convertTimeEntries)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .compose(mapErrorsToExceptions())
+                .map(this::convertTimeEntries);
     }
 
     public Observable<List<TimeEntry>> removeTimeEntry(TimeEntry timeEntry) {
@@ -134,9 +129,16 @@ public class LoriGate {
         removeInstances.add(timeEntryDto);
 
         return retrofitLoriService.commitTimeEntry(new CommitRequest<>(null, removeInstances))
-                .onErrorResumeNext((throwable) -> Observable.just(Lists.newArrayList(timeEntryDto))) // TODO: now it ignores error. Remove it when server's fixed.
-                .map(this::convertTimeEntries)
-                .subscribeOn(Schedulers.io());
+                .subscribeOn(Schedulers.io())
+                .onErrorResumeNext(throwable -> {
+                    if (throwable instanceof HttpException &&
+                            ((HttpException) throwable).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                        return Observable.error(new LoriAuthenticationException(throwable));
+                    } else {
+                        return Observable.just(Lists.newArrayList(timeEntryDto)); // TODO: now it ignores error. Remove it when server's fixed.
+                    }
+                })
+                .map(this::convertTimeEntries);
     }
 
     public Observable<List<TimeEntry>> loadTimeEntries(Date start, Date end, User user) {
@@ -155,7 +157,19 @@ public class LoriGate {
                 ),
                 "timeEntry.dayDisplay"
         ).subscribeOn(Schedulers.io())
+                .compose(mapErrorsToExceptions())
                 .map(this::convertTimeEntries);
+    }
+
+    public <T> Observable.Transformer<T, T> mapErrorsToExceptions() {
+        return observable -> observable.onErrorResumeNext(throwable -> {
+            if (throwable instanceof HttpException &&
+                    ((HttpException) throwable).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                return Observable.error(new LoriAuthenticationException(throwable));
+            } else {
+                return Observable.error(throwable);
+            }
+        });
     }
 
     private User convertUser(UserDto userDto) {

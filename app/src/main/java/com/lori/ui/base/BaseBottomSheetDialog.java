@@ -60,7 +60,11 @@ public abstract class BaseBottomSheetDialog<P extends Presenter> extends Nucleus
         Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
     }
 
+    public void showToast(int resourceId) {
+        showToast(getContext().getString(resourceId));
+    }
+
     public void showNetworkError() {
-        showToast(getContext().getString(R.string.error_network));
+        showToast(R.string.error_network);
     }
 }

@@ -7,13 +7,22 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import butterknife.BindView;
 import com.lori.R;
+import com.lori.core.service.LoginService;
 import com.lori.ui.adapter.WeekPagerAdapter;
 import com.lori.ui.base.BaseActivity;
+import com.lori.ui.presenter.WeekActivityPresenter;
+import nucleus.factory.RequiresPresenter;
+
+import javax.inject.Inject;
 
 /**
  * @author artemik
  */
-public class WeekActivity extends BaseActivity {
+@RequiresPresenter(WeekActivityPresenter.class)
+public class WeekActivity extends BaseActivity<WeekActivityPresenter> {
+
+    @Inject
+    LoginService loginService;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -38,6 +47,10 @@ public class WeekActivity extends BaseActivity {
         weekPager.setOffscreenPageLimit(10);
     }
 
+    public void showCurrentWeek() {
+        weekPager.setCurrentItem(((WeekPagerAdapter) weekPager.getAdapter()).getMiddlePosition());
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -49,7 +62,10 @@ public class WeekActivity extends BaseActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_go_to_today:
-                weekPager.setCurrentItem(((WeekPagerAdapter) weekPager.getAdapter()).getMiddlePosition());
+                getPresenter().onGoTodayClick();
+                return true;
+            case R.id.action_logout:
+                getPresenter().onLogoutClick();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

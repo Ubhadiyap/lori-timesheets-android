@@ -11,4 +11,12 @@
           android:icon="@drawable/calendar_today"
           app:showAsAction="always"/>
 
+    <item android:id="@+id/action_logout"
+          android:layout_width="12dp"
+          android:layout_height="12dp"
+          android:title="@string/logout_menu_item"
+          android:orderInCategory="200"
+          android:icon="@drawable/logout"
+          app:showAsAction="always"/>
+
 </menu>

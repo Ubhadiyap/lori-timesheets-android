@@ -3,6 +3,7 @@ package com.lori.ui.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.Toast;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import com.lori.R;
@@ -49,7 +50,15 @@ public class BaseFragment<P extends Presenter> extends NucleusSupportFragment<P>
         unbinder.unbind();
     }
 
+    public void showToast(String text) {
+        Toast.makeText(getContext(), text, Toast.LENGTH_LONG).show();
+    }
+
+    public void showToast(int resourceId) {
+        showToast(getContext().getString(resourceId));
+    }
+
     public void showNetworkError() {
-        ((BaseActivity)getActivity()).showToast(getString(R.string.error_network));
+        showToast(R.string.error_network);
     }
 }

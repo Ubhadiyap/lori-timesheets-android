@@ -33,7 +33,7 @@ public class DayFragmentPresenter extends BasePresenter<DayFragment> {
         super.onCreate(savedState);
         eventBus.register(this);
 
-        restartable(UPDATE_TIME_ENTRIES, fragment -> {
+        restartableOnUi(UPDATE_TIME_ENTRIES, fragment -> {
             fragment.setTimeEntries(allDayTimeEntries);
             fragment.setTotalMinutesSpent(totalMinutesSpent);
         });

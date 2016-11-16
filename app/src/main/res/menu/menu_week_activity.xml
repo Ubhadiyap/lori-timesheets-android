@@ -3,20 +3,20 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".ui.activity.WeekActivity">
 
-    <item android:id="@+id/action_go_to_today"
-          android:layout_width="12dp"
-          android:layout_height="12dp"
-          android:title="@string/today_menu_item"
-          android:orderInCategory="100"
-          android:icon="@drawable/calendar_today"
-          app:showAsAction="always"/>
-
     <item android:id="@+id/action_logout"
           android:layout_width="12dp"
           android:layout_height="12dp"
           android:title="@string/logout_menu_item"
-          android:orderInCategory="200"
+          android:orderInCategory="100"
           android:icon="@drawable/logout"
+          app:showAsAction="always"/>
+
+    <item android:id="@+id/action_go_to_today"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:title="@string/today_menu_item"
+          android:orderInCategory="200"
+          android:icon="@drawable/calendar_today"
           app:showAsAction="always"/>
 
 </menu>

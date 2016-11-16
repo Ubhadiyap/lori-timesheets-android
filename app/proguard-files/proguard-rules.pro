@@ -25,3 +25,5 @@
 -keep @dagger.Component interface * {
     *;
 }
+
+-keep class com.lori.core.gate.lori.dto.** { *; }

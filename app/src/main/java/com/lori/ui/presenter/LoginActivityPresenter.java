@@ -1,6 +1,7 @@
 package com.lori.ui.presenter;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Patterns;
 import com.lori.core.gate.lori.LoriGate;
 import com.lori.core.gate.lori.exception.LoriAuthenticationException;
@@ -44,6 +45,7 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
                     if (throwable instanceof LoriAuthenticationException) {
                         loginActivity.showCredentialsAreIncorrect();
                     } else {
+                        Log.e(TAG, "Couldn't login", throwable);
                         loginActivity.showNetworkError();
                     }
                     loginActivity.setSignInButtonEnabled(true);

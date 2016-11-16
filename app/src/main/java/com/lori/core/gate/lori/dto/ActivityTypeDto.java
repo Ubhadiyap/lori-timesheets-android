@@ -1,27 +1,24 @@
 package com.lori.core.gate.lori.dto;
 
 import com.lori.core.entity.ActivityType;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 /**
  * @author artemik
  */
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 public class ActivityTypeDto extends BaseEntityDto {
     private String name;
-
-    public ActivityTypeDto() {
-    }
 
     public ActivityTypeDto(ActivityType activityType) {
         super(activityType);
         name = activityType.getName();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override

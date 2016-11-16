@@ -73,19 +73,13 @@ public class BasePresenter<ViewType> extends RxPresenter<ViewType> {
         );
     }
 
-    /**
-     * A non-restartable version that returns nothing.
-     */
-    protected void first(Function<ViewType> function) {
+    protected void onUi(Function<ViewType> function) {
         add(view().filter(view -> view != null)
                 .take(1)
                 .subscribe(function::call));
     }
 
-    /**
-     * A restartable version that returns nothing.
-     */
-    protected void restartable(int restartableId, Function<ViewType> function) {
+    protected void restartableOnUi(int restartableId, Function<ViewType> function) {
         restartable(restartableId,
                 () -> view().filter(view -> view != null)
                         .take(1)

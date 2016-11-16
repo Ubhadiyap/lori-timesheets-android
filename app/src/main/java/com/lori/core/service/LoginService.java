@@ -50,9 +50,9 @@ public class LoginService {
                 .doOnNext(user -> sessionService.setServerUrl(baseUrl));
     }
 
-    public void logout() {
-        sessionService.clearSession();
-        // TODO: call server logout.
+    public Observable<Void> logout() {
+        UUID deletedSession = sessionService.clearSession();
+        return loriGate.logout(deletedSession);
     }
 
     public boolean isLoggedIn() {

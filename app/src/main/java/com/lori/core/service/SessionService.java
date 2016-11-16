@@ -45,10 +45,12 @@ public class SessionService {
         putToPreferences(SESSION_KEY, session == null ? null : session.toString());
     }
 
-    public void clearSession() {
+    public UUID clearSession() {
+        UUID deletedSession = getSession();
         setSession(null);
         setUser(null);
         setServerUrl(null);
+        return deletedSession;
     }
 
     public boolean hasSession() {

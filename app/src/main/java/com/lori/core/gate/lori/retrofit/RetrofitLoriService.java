@@ -14,19 +14,23 @@ import rx.Observable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author artemik
  */
 public interface RetrofitLoriService {
     String LOGIN_PATH = "login";
+    String LOGOUT_PATH = "logout";
     String QUERY_PATH = "query.json";
     String SERVICE_PATH = "service.json";
     String COMMIT_PATH = "commit.json";
-    String PROJECT_PATH = "projects";
 
     @GET(LOGIN_PATH)
     Observable<String> login(@Query("u") String login, @Query("p") String password);
+
+    @GET(LOGOUT_PATH)
+    Observable<Void> logout(@Query("session") UUID session);
 
     @POST(QUERY_PATH)
     Observable<List<UserDto>> loadUsersByLogin(@Body LoadUserByLoginRequest request);

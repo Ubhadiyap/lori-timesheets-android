@@ -23,7 +23,7 @@ public class LauncherActivityPresenter extends BasePresenter<LauncherActivity> {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        first(launcherActivity -> {
+        onUi(launcherActivity -> {
             if (loginService.isLoggedIn()) {
                 launchWeekActivity();
             } else {

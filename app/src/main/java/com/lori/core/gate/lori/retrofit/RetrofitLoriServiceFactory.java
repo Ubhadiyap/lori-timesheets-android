@@ -10,6 +10,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.TimeZone;
 
 /**
  * @author artemik
@@ -45,6 +46,7 @@ public class RetrofitLoriServiceFactory {
     private JacksonConverterFactory createJacksonFactory() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        mapper.setTimeZone(TimeZone.getDefault());
         return JacksonConverterFactory.create(mapper);
     }
 

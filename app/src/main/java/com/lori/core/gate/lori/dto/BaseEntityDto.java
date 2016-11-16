@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lori.core.entity.BaseEntity;
 import com.lori.core.gate.lori.LoriGate;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.UUID;
 
@@ -15,10 +17,12 @@ import java.util.UUID;
 public abstract class BaseEntityDto {
     private static final String NEW_PREFIX = "NEW";
 
-    @JsonIgnore
+    @Getter(onMethod=@__({@JsonIgnore}))
+    @Setter
     protected UUID id;
 
-    @JsonIgnore
+    @Getter(onMethod=@__({@JsonIgnore}))
+    @Setter
     protected boolean isNew;
 
     public BaseEntityDto() {
@@ -29,23 +33,6 @@ public abstract class BaseEntityDto {
     }
 
     protected abstract String getEntityClassName();
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    @JsonIgnore
-    public boolean isNew() {
-        return isNew;
-    }
-
-    public void setNew(boolean aNew) {
-        isNew = aNew;
-    }
 
     @JsonProperty("id")
     public String getJsonId() {

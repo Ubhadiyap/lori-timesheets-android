@@ -71,6 +71,12 @@ public class LoriGate {
                 .compose(mapErrorsToExceptions());
     }
 
+    public Observable<Void> logout(UUID session) {
+        return retrofitLoriService.logout(session)
+                .subscribeOn(Schedulers.io())
+                .compose(mapErrorsToExceptions());
+    }
+
     public Observable<User> loadUserByLogin(String login) {
         LoadUserByLoginRequest request = new LoadUserByLoginRequest(login);
 

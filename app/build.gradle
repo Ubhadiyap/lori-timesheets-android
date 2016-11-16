@@ -121,4 +121,8 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
 
     compile 'com.android.support:multidex:1.0.1'
+
+    def lombokVersion = '1.16.10'
+    provided "org.projectlombok:lombok:$lombokVersion"
+    apt "org.projectlombok:lombok:$lombokVersion"
 }

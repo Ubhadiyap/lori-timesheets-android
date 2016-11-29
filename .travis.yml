@@ -12,11 +12,12 @@ android:
     - build-tools-24.0.2
     - extra-android-m2repository
     - extra-android-support
-    - sys-img-armeabi-v7a-android-18
 
+before_install:
+ - chmod +x gradlew
 
 script:
-  - gradlew build test
+  - ./gradlew build test
 
 cache:
   directories:

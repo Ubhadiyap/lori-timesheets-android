@@ -1,4 +1,6 @@
 # <img src="https://raw.githubusercontent.com/artemik/lori-timesheets-android/master/demo/readme-title-image.png" width="35"> Lori Timesheets Android Client 
+###### <img src=" https://travis-ci.org/artemik/lori-timesheets-android.svg?branch=master">
+
 This is an Android client for the open source timesheets management system [Lori Timesheets](https://github.com/Haulmont/platform-sample-timesheets).
 
 The application lets you manage timesheets - view, add, edit, delete time entries, etc.

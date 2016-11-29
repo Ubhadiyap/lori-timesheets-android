@@ -16,7 +16,7 @@ android:
 
 
 script:
-  - gradle build test
+  - gradlew build test
 
 cache:
   directories:

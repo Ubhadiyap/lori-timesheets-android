@@ -1,5 +1,6 @@
 package com.lori.ui.base;
 
+import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,7 +65,7 @@ public abstract class TimeEntryPartBaseListAdapter<T extends BaseEntity> extends
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+    public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") int i) {
         T item = items.get(i);
 
         String text = toString(item);

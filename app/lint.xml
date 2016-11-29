@@ -1,0 +1,6 @@
+<lint>
+    <issue id="InvalidPackage">
+        <ignore regexp=".*jackson.*" />
+        <ignore regexp=".*retrofit2.*" />
+    </issue>
+</lint>

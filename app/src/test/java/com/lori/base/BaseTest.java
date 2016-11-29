@@ -25,7 +25,7 @@ import java.util.concurrent.Executors;
  */
 @RunWith(RxJavaTestRunner.class)
 @Config(manifest = "src/main/AndroidManifest.xml", constants = BuildConfig.class, sdk = Build.VERSION_CODES.LOLLIPOP, application = TestApplication.class)
-public class BaseTest {
+public abstract class BaseTest {
 
     private static final BackgroundTasksTestManager BACKGROUND_TASKS_TEST_MANAGER = new BackgroundTasksTestManager();
 

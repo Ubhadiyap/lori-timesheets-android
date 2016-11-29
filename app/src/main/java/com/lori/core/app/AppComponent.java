@@ -1,5 +1,6 @@
 package com.lori.core.app;
 
+import com.lori.core.service.SessionService;
 import com.lori.ui.activity.LauncherActivity;
 import com.lori.ui.activity.WeekActivity;
 import com.lori.ui.presenter.*;
@@ -11,8 +12,11 @@ import javax.inject.Singleton;
  * @author artemik
  */
 @Singleton
-@Component(modules = {AppModule.class})
+@Component(modules = {AppModule.class, TimeEntryServiceModule.class, LoginServiceModule.class})
 public interface AppComponent {
+
+    SessionService sessionService();
+
     void inject(WeekActivity x);
 
     void inject(LauncherActivity x);

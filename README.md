@@ -11,5 +11,7 @@ The application uses Cuba REST API to query the server.
 
 While building the application, it was kept in mind that view/add/edit/remove actions should require as less movements as possible, be at convenient and expected positions on the screen.
 
+Unit and functional tests are present.
+
 ## Main Libraries Used
 Dagger, Nucleus (MVP), Retrofit, RxJava, ButterKnife, IcePick, EventBus.

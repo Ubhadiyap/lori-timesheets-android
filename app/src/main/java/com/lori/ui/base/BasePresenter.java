@@ -3,7 +3,6 @@ package com.lori.ui.base;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import icepick.Icepick;
-import nucleus.presenter.RxPresenter;
 import org.greenrobot.eventbus.EventBus;
 import rx.Observable;
 import rx.functions.Action2;
@@ -17,7 +16,7 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 /**
  * @author artemik
  */
-public class BasePresenter<ViewType> extends RxPresenter<ViewType> {
+public class BasePresenter<ViewType> extends CustomRxPresenter<ViewType> {
 
     @Inject
     public EventBus eventBus;

@@ -10,18 +10,27 @@ import com.lori.core.app.util.Injector;
 public class App extends MultiDexApplication implements Injector {
 
     private ComponentReflectionInjector<AppComponent> injector;
+    private AppComponent component;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        AppComponent component = DaggerAppComponent.builder()
+        component = createAppComponent();
+        injector = new ComponentReflectionInjector(component.getClass(), component);
+    }
+
+    protected AppComponent createAppComponent() {
+        return DaggerAppComponent.builder()
                 .appModule(new AppModule(this))
                 .build();
-        injector = new ComponentReflectionInjector<>(AppComponent.class, component);
     }
 
     @Override
     public void inject(Object target) {
         injector.inject(target);
+    }
+
+    public AppComponent getAppComponent() {
+        return component;
     }
 }

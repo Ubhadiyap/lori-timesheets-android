@@ -12,31 +12,25 @@ import rx.functions.Func0;
 import rx.functions.Func1;
 import rx.subjects.PublishSubject;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author artemik
  */
-@Singleton
 public class LoginService {
 
-    @Inject
-    LoriGate loriGate;
+    private LoriGate loriGate;
+    private SessionService sessionService;
+    private App app;
 
-    @Inject
-    SessionService sessionService;
-
-    @Inject
-    App app;
-
-    private static final PublishSubject<UUID> loginSubject = PublishSubject.create();
+    private final PublishSubject<UUID> loginSubject = PublishSubject.create();
     private final AtomicBoolean loginActivityOpened = new AtomicBoolean(false);
 
-    @Inject
-    public LoginService() {
+    public LoginService(LoriGate loriGate, SessionService sessionService, App app) {
+        this.loriGate = loriGate;
+        this.sessionService = sessionService;
+        this.app = app;
     }
 
     public Observable<User> login(String login, String password, String baseUrl) {

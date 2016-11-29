@@ -24,10 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.net.HttpURLConnection;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author artemik
@@ -44,7 +41,7 @@ public class LoriGate {
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
     public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    private static final SimpleDateFormat DATE_TIME_FORMAT_INSTANCE = new SimpleDateFormat(DATE_TIME_FORMAT);
+    private static final SimpleDateFormat DATE_TIME_FORMAT_INSTANCE = new SimpleDateFormat(DATE_TIME_FORMAT, Locale.getDefault());
 
     @Inject
     public LoriGate() {

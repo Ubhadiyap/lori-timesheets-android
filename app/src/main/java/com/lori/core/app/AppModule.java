@@ -22,25 +22,25 @@ public class AppModule {
 
     @Provides
     @Singleton
-    App app() {
+    public App app() {
         return app;
     }
 
     @Provides
     @Singleton
-    SharedPreferences provideSharedPreferences() {
+    public SharedPreferences provideSharedPreferences() {
         return app.getSharedPreferences("settings", 0);
     }
 
     @Provides
     @Singleton
-    EventBus eventBus() {
+    public EventBus eventBus() {
         return new EventBus();
     }
 
     @Provides
     @Singleton
-    Context context() {
+    public Context context() {
         return app.getApplicationContext();
     }
 }

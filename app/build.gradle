@@ -7,6 +7,7 @@ apply plugin: 'com.jakewharton.hugo'
 repositories {
     jcenter()
     maven { url "https://clojars.org/repo/" }
+    maven { url "https://jitpack.io" }
 }
 
 def keystorePropertiesFile = rootProject.file("keystore.properties")
@@ -52,6 +53,8 @@ android {
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
+
+        testInstrumentationRunner "com.lori.base.TestInstrumentationRunner"
     }
 
     compileOptions {
@@ -72,12 +75,39 @@ android {
     dexOptions {
         javaMaxHeapSize "5g"
     }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+    }
+
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
     testCompile 'junit:junit:4.12'
+
+    def robolectricVersion = '3.1.4'
+    testCompile "org.robolectric:robolectric:$robolectricVersion"
+    testCompile "org.robolectric:shadows-multidex:$robolectricVersion"
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     compile 'com.android.support:design:24.2.1'
@@ -105,10 +135,12 @@ dependencies {
     compile "frankiesardo:icepick:$icepickVersion"
     apt "frankiesardo:icepick-processor:$icepickVersion"
 
-    def daggerVersion = '2.7'
+    def daggerVersion = '2.8'
     compile 'javax.annotation:javax.annotation-api:1.2'
     compile "com.google.dagger:dagger:$daggerVersion"
     apt "com.google.dagger:dagger-compiler:$daggerVersion"
+    testApt "com.google.dagger:dagger-compiler:$daggerVersion"
+    androidTestApt "com.google.dagger:dagger-compiler:$daggerVersion"
 
     compile 'org.greenrobot:eventbus:3.0.0'
 
@@ -125,4 +157,20 @@ dependencies {
     def lombokVersion = '1.16.10'
     provided "org.projectlombok:lombok:$lombokVersion"
     apt "org.projectlombok:lombok:$lombokVersion"
+
+    testCompile 'org.mockito:mockito-core:2.2.22'
+
+    androidTestCompile 'com.android.support.test:runner:0.5'
+    androidTestCompile 'com.android.support.test:rules:0.5'
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+
+    androidTestCompile 'com.android.support:support-annotations:24.2.1'
+
+    androidTestCompile ('com.squareup.okhttp3:mockwebserver:3.4.2') {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+        exclude group: 'com.squareup.okio', module: 'okio'
+    }
 }

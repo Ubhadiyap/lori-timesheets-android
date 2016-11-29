@@ -1,0 +1,24 @@
+# Disabling sudo moves build to the Container Based Infrastructure on Travis CI
+sudo: false
+
+language: android
+jdk: oraclejdk8
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - android-24
+    - build-tools-24.0.2
+    - extra-android-m2repository
+    - extra-android-support
+    - sys-img-armeabi-v7a-android-18
+
+
+script:
+  - gradle build test
+
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle

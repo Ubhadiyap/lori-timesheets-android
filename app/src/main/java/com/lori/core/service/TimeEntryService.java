@@ -8,26 +8,22 @@ import rx.Observable;
 import rx.functions.Func0;
 import rx.schedulers.Schedulers;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Calendar;
 import java.util.List;
 
 /**
  * @author artemik
  */
-@Singleton
 public class TimeEntryService {
 
-    @Inject
     LoriGate loriGate;
-    @Inject
     SessionService sessionService;
-    @Inject
     LoginService loginService;
 
-    @Inject
-    public TimeEntryService() {
+    public TimeEntryService(LoriGate loriGate, SessionService sessionService, LoginService loginService) {
+        this.loriGate = loriGate;
+        this.sessionService = sessionService;
+        this.loginService = loginService;
     }
 
     public Observable<TimeEntry> savePersonalTimeEntry(TimeEntry timeEntry) {

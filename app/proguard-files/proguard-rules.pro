@@ -27,3 +27,7 @@
 }
 
 -keep class com.lori.core.gate.lori.dto.** { *; }
+-keepnames class com.lori.core.gate.lori.dto.** { *; }
+
+-keep class com.lori.core.entity.** { *; }
+-keepnames class com.lori.core.entity.** { *; }

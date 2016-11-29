@@ -3,7 +3,6 @@ package com.lori.ui.presenter;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Patterns;
-import com.lori.core.gate.lori.LoriGate;
 import com.lori.core.gate.lori.exception.LoriAuthenticationException;
 import com.lori.core.service.LoginService;
 import com.lori.ui.activity.LoginActivity;
@@ -24,10 +23,7 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
     @Inject
     LoginService loginService;
 
-    @Inject
-    LoriGate loriGate;
-
-    private static final int LOGIN_REQUEST = 0;
+    public static final int LOGIN_REQUEST = 0;
 
     private String typedLogin;
     private String typedPassword;
@@ -88,11 +84,19 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
     }
 
     private boolean isServerUrlValid(String serverUrl) {
+        if (serverUrl != null) {
+            serverUrl = serverUrl.replace("localhost:", "127.0.0.1:"); //TODO: Make more universal check.
+        }
         return Patterns.WEB_URL.matcher(serverUrl).matches();
     }
 
     public boolean onBackPressed() {
-        loginService.onLoginActivityClosed();
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        loginService.onLoginActivityClosed();
     }
 }

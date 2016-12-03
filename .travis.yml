@@ -14,6 +14,10 @@ android:
     - extra-android-support
     - sys-img-armeabi-v7a-android-18
 
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 before_install:
  - chmod +x gradlew
  - pip install --user codecov
@@ -25,7 +29,8 @@ before_script:
  - adb shell input keyevent 82
 
 script:
-  - ./gradlew --no-daemon --info test connectedAndroidTest -PdisablePreDex
+  - ./gradlew --no-daemon --info clean
+  - ./gradlew --no-daemon --info --stacktrace test connectedAndroidTest -PdisablePreDex
 
 after_success:
   - codecov
@@ -33,4 +38,5 @@ after_success:
 cache:
   directories:
     - $HOME/.m2
-    - $HOME/.gradle
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/

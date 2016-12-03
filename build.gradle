@@ -23,9 +23,18 @@ buildscript {
     configurations.classpath.exclude group: 'com.android.tools.external.lombok'
 }
 
+ext.preDexLibs = !project.hasProperty('disablePreDex')
+
 allprojects {
     repositories {
         jcenter()
+    }
+
+    project.plugins.whenPluginAdded { plugin ->
+        if ("com.android.build.gradle.AppPlugin".equals(plugin.class.name) || "com.android.build.gradle.LibraryPlugin".equals(plugin.class.name)) {
+            println "Disable pre dexing for module ${project.name}"
+            project.android.dexOptions.preDexLibraries = rootProject.ext.preDexLibs
+        }
     }
 }
 

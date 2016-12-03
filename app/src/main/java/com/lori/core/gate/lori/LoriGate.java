@@ -138,7 +138,8 @@ public class LoriGate {
                             ((HttpException) throwable).code() == HttpURLConnection.HTTP_UNAUTHORIZED) {
                         return Observable.error(new LoriAuthenticationException(throwable));
                     } else {
-                        return Observable.just(Lists.newArrayList(timeEntryDto)); // TODO: now it ignores error. Remove it when server's fixed.
+                        // TODO: ignore other errors for now. Remove it when server's fixed.
+                        return Observable.just(Lists.newArrayList(timeEntryDto));
                     }
                 })
                 .map(this::convertTimeEntries);

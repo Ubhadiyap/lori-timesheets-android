@@ -33,7 +33,7 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        restartableFirstAsync(LOGIN_REQUEST,
+        restartableFirst(LOGIN_REQUEST,
                 () -> loginService.login(typedLogin, typedPassword, typedServerUrl)
                         .observeOn(mainThread()),
                 (loginActivity, user) -> loginActivity.onBackPressed(),

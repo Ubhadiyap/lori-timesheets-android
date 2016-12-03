@@ -29,7 +29,7 @@ public class BaseInstrumentationTest {
 
     @BeforeClass
     public static void setup() {
-        CustomRxPresenter.testListener = BACKGROUND_TASKS_TEST_MANAGER;
+        CustomRxPresenter.backgroundTasksTestListener = BACKGROUND_TASKS_TEST_MANAGER;
     }
 
     @After
@@ -115,11 +115,11 @@ public class BaseInstrumentationTest {
         };
     }
 
-    protected void finishCurrentActivity(){
-        getInstrumentation().runOnMainSync(new Runnable(){
-            public void run(){
+    protected void finishCurrentActivity() {
+        getInstrumentation().runOnMainSync(new Runnable() {
+            public void run() {
                 Collection<Activity> resumedActivity = ActivityLifecycleMonitorRegistry.getInstance().getActivitiesInStage(Stage.RESUMED);
-                for(Activity act : resumedActivity){
+                for (Activity act : resumedActivity) {
                     act.finishAffinity();
                     break;
                 }

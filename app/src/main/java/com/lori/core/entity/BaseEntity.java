@@ -9,6 +9,10 @@ import java.util.UUID;
 public class BaseEntity implements Serializable {
     private UUID id;
 
+    public BaseEntity() {
+        setId(UUID.randomUUID());
+    }
+
     public UUID getId() {
         return id;
     }

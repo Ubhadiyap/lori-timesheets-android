@@ -34,7 +34,7 @@ public abstract class BaseTest {
 
     @Before
     public void setup() {
-        CustomRxPresenter.testListener = BACKGROUND_TASKS_TEST_MANAGER;
+        CustomRxPresenter.backgroundTasksTestListener = BACKGROUND_TASKS_TEST_MANAGER;
 
         mainThreadExecutor = Executors.newSingleThreadExecutor();
 

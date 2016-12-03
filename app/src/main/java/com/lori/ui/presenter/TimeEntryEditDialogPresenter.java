@@ -15,9 +15,6 @@ import com.lori.ui.dialog.EditTimeEntryDialog;
 
 import javax.inject.Inject;
 import java.util.Calendar;
-import java.util.UUID;
-
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
 
 /**
  * @author artemik
@@ -25,7 +22,9 @@ import static rx.android.schedulers.AndroidSchedulers.mainThread;
 public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDialog> {
     private static final String TAG = TimeEntryEditDialogPresenter.class.getSimpleName();
 
-    private static final int LOAD_AVAILABLE_PROJECTS = 0;
+    public static final int LOAD_AVAILABLE_PROJECTS = 0;
+    public static final int COMMIT_TIME_ENTRY = 1;
+    public static final int DELETE_TIME_ENTRY = 2;
 
     @Inject
     TimeEntryService timeEntryService;
@@ -38,20 +37,28 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
 
     private Calendar dayDate;
     private TimeEntry timeEntryToEdit;
+    private TimeEntry timeEntryToCommit;
 
     @Override
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        restartableFirstAsync(LOAD_AVAILABLE_PROJECTS,
-                () -> timeEntryService.loadAvailableProjects()
-                        .observeOn(mainThread()),
+        initLoadAvailableProjectsTask();
+        initCommitTimeEntryTask();
+        initDeleteTimeEntryTask();
+
+        start(LOAD_AVAILABLE_PROJECTS);
+    }
+
+    private void initLoadAvailableProjectsTask() {
+        restartableFirst(LOAD_AVAILABLE_PROJECTS,
+                () -> timeEntryService.loadAvailableProjects(),
                 (view, projects) -> {
                     view.setAvailableProjects(projects);
                     if (timeEntryToEdit != null) {
 
-                        // Available project contains all loaded tasks and activity types, need to use it,
-                        // instead of timeEntryToEdit.task.project.
+                        // The loaded available project contains all loaded tasks and activity types.
+                        // Need to use it instead of timeEntryToEdit.task.project.
                         Project timeEntryToEditProject = null;
                         for (Project project : projects) {
                             if (project.getId().equals(timeEntryToEdit.getTask().getProject().getId())) {
@@ -81,8 +88,50 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                         editTimeEntryDialog.showNetworkError();
                     }
                 });
+    }
 
-        start(LOAD_AVAILABLE_PROJECTS);
+    private void initCommitTimeEntryTask() {
+        restartableFirst(COMMIT_TIME_ENTRY,
+                () -> (isEditing() ? timeEntryService.updatePersonalTimeEntry(timeEntryToCommit) : timeEntryService.savePersonalTimeEntry(timeEntryToCommit)),
+                (dialog, timeEntry) -> {
+                    dialog.setOnDismissListener(dialog1 -> {
+                        if (isEditing()) {
+                            eventBus.post(TimeEntryChangedEvent.changed(timeEntryToCommit, timeEntryToEdit));
+                        } else {
+                            eventBus.post(TimeEntryChangedEvent.added(timeEntryToCommit));
+                        }
+                    });
+                    dialog.dismiss();
+                },
+                (dialog, throwable) -> {
+                    Log.d(TAG, "Couldn't commit time entry: " + timeEntryToCommit);
+                    if (throwable instanceof UserCancelledLoginException) {
+                        dialog.showToast(R.string.login_required);
+                    } else {
+                        dialog.showNetworkError();
+                    }
+                    dialog.setButtonsAreActive(true);
+                });
+    }
+
+    private void initDeleteTimeEntryTask() {
+        restartableFirst(DELETE_TIME_ENTRY,
+                () -> timeEntryService.removeTimeEntry(timeEntryToEdit),
+                (dialog, removedTimeEntry) -> {
+                    dialog.setOnDismissListener(dialog1 -> {
+                        eventBus.post(TimeEntryChangedEvent.removed(timeEntryToEdit));
+                    });
+                    dialog.dismiss();
+                },
+                (dialog, throwable) -> {
+                    Log.d(TAG, "Couldn't remove time entry: " + timeEntryToEdit);
+                    if (throwable instanceof UserCancelledLoginException) {
+                        dialog.showToast(R.string.login_required);
+                    } else {
+                        dialog.showNetworkError();
+                    }
+                    dialog.setButtonsAreActive(true);
+                });
     }
 
     public void onProjectClick(Project project) {
@@ -108,40 +157,16 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
     public void onConfirmButtonClick() {
         getView().setButtonsAreActive(false);
 
-        final TimeEntry beforeCommitTimeEntryState = isEditing() ? getCopy(timeEntryToEdit) : null;
-
-        TimeEntry timeEntryToCommit = isEditing() ? timeEntryToEdit : new TimeEntry();
-        if (!isEditing()) {
-            timeEntryToCommit.setId(UUID.randomUUID());
-        }
+        timeEntryToCommit = isEditing() ? getCopy(timeEntryToEdit) : new TimeEntry();
         timeEntryToCommit.setDate(dayDate.getTime());
 
-        chosenTask.setProject(copyChosenProject());
+        chosenTask.setProject(copyChosenProject()); // To throw away redundant fields.
         timeEntryToCommit.setTask(chosenTask);
 
         timeEntryToCommit.setActivityType(chosenActivityType);
         timeEntryToCommit.setTimeInMinutes(chosenHour * 60 + chosenMinutes);
 
-        first(() -> (isEditing() ? timeEntryService.updatePersonalTimeEntry(timeEntryToCommit) : timeEntryService.savePersonalTimeEntry(timeEntryToCommit))
-                        .observeOn(mainThread()),
-                (dialog, timeEntry) -> {
-                    dialog.setOnDismissListener(dialog1 -> {
-                        if (isEditing()) {
-                            eventBus.post(TimeEntryChangedEvent.changed(timeEntryToCommit, beforeCommitTimeEntryState));
-                        } else {
-                            eventBus.post(TimeEntryChangedEvent.added(timeEntryToCommit));
-                        }
-                    });
-                    dialog.dismiss();
-                },
-                (dialog, throwable) -> {
-                    Log.d(TAG, "Couldn't commit time entry: " + timeEntryToCommit);
-                    if (throwable instanceof UserCancelledLoginException) {
-                        dialog.showToast(R.string.login_required);
-                    } else {
-                        dialog.showNetworkError();
-                    }
-                });
+        start(COMMIT_TIME_ENTRY);
     }
 
     private Project copyChosenProject() {
@@ -166,23 +191,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
 
     public void onDeleteButtonClick() {
         getView().setButtonsAreActive(false);
-
-        first(() -> timeEntryService.removeTimeEntry(timeEntryToEdit)
-                        .observeOn(mainThread()),
-                (dialog, timeEntry) -> {
-                    dialog.setOnDismissListener(dialog1 -> {
-                        eventBus.post(TimeEntryChangedEvent.removed(timeEntryToEdit));
-                    });
-                    dialog.dismiss();
-                },
-                (dialog, throwable) -> {
-                    Log.d(TAG, "Couldn't remove time entry: " + timeEntryToEdit);
-                    if (throwable instanceof UserCancelledLoginException) {
-                        dialog.showToast(R.string.login_required);
-                    } else {
-                        dialog.showNetworkError();
-                    }
-                });
+        start(DELETE_TIME_ENTRY);
     }
 
     public void setDayDate(Calendar dayDate) {

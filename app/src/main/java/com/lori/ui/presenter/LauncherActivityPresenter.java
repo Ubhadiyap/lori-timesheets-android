@@ -2,6 +2,7 @@ package com.lori.ui.presenter;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import com.lori.core.service.LoginService;
 import com.lori.ui.activity.LauncherActivity;
 import com.lori.ui.activity.WeekActivity;
@@ -9,12 +10,13 @@ import com.lori.ui.base.BasePresenter;
 
 import javax.inject.Inject;
 
-import static rx.android.schedulers.AndroidSchedulers.mainThread;
-
 /**
  * @author artemik
  */
 public class LauncherActivityPresenter extends BasePresenter<LauncherActivity> {
+    private static final String TAG = LauncherActivityPresenter.class.getSimpleName();
+
+    private static final int LISTEN_FOR_LOGIN_RESULT = 0;
 
     @Inject
     LoginService loginService;
@@ -23,28 +25,31 @@ public class LauncherActivityPresenter extends BasePresenter<LauncherActivity> {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        onUi(launcherActivity -> {
+        restartableFirst(LISTEN_FOR_LOGIN_RESULT,
+                () -> loginService.getLoginSubject(),
+                (launcherActivity, sessionId) -> {
+                    if (loginService.isLoggedIn()) {
+                        launchWeekActivity(launcherActivity);
+                    } else {
+                        launcherActivity.finish();
+                    }
+                },
+                (launcherActivity, throwable) -> Log.e(TAG, "Error on login result")
+        );
+
+        onViewOnce(launcherActivity -> {
             if (loginService.isLoggedIn()) {
-                launchWeekActivity();
+                launchWeekActivity(launcherActivity);
             } else {
                 loginService.startLoginActivityIfNotStarted();
-                add(loginService.getLoginSubject()
-                        .subscribeOn(mainThread())
-                        .subscribe(sessionId -> {
-                            if (loginService.isLoggedIn()) {
-                                launchWeekActivity();
-                            } else {
-                                forceGetView().finish();
-                            }
-                        })
-                );
+                start(LISTEN_FOR_LOGIN_RESULT);
             }
         });
     }
 
-    private void launchWeekActivity() {
-        Intent intent = new Intent(forceGetView(), WeekActivity.class);
-        forceGetView().finish();
-        forceGetView().startActivity(intent);
+    private void launchWeekActivity(LauncherActivity activity) {
+        Intent intent = new Intent(activity, WeekActivity.class);
+        activity.finish();
+        activity.startActivity(intent);
     }
 }

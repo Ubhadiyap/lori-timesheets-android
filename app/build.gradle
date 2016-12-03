@@ -24,10 +24,10 @@ frodo {
 android {
     signingConfigs {
         config {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
             storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
             storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
         }
     }
     compileSdkVersion 24
@@ -71,6 +71,12 @@ android {
             proguardFiles file('proguard-files').listFiles()
             signingConfig signingConfigs.config
             debuggable true
+            testCoverageEnabled true
+        }
+        
+        debug {
+            applicationIdSuffix '.debug'
+            testCoverageEnabled true
         }
     }
 
@@ -98,6 +104,14 @@ android {
         }
         androidTest {
             java.srcDir sharedTestDir
+        }
+    }
+
+    // This allows us see tests execution progress in the output on the CI.
+    testOptions.unitTests.all {
+        testLogging {
+            events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+            exceptionFormat 'full'
         }
     }
 }

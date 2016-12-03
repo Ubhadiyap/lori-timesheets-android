@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static rx.android.schedulers.AndroidSchedulers.mainThread;
+
 /**
  * @author artemik
  */
@@ -37,7 +39,7 @@ public class CustomRxPresenter<View> extends Presenter<View> {
     private final ArrayList<Integer> requested = new ArrayList<>();
 
     @VisibleForTesting
-    public static TestListener testListener;
+    public static BackgroundTasksTestListener backgroundTasksTestListener;
 
     /**
      * Returns an {@link rx.Observable} that emits the current attached view or null.
@@ -119,106 +121,56 @@ public class CustomRxPresenter<View> extends Presenter<View> {
         return subscription == null || subscription.isUnsubscribed();
     }
 
-    /**
-     * This is a shortcut that can be used instead of combining together
-     * {@link #restartable(int, Func0)},
-     * {@link #deliverFirst()},
-     * {@link #split(Action2, Action2)}.
-     *
-     * @param restartableId     an id of the restartable.
-     * @param observableFactory a factory that should return an Observable when the restartable should run.
-     * @param onNext            a callback that will be called when received data should be delivered to view.
-     * @param onError           a callback that will be called if the source observable emits onError.
-     * @param <T>               the type of the observable.
-     */
     public <T> void restartableFirst(int restartableId, final Func0<Observable<T>> observableFactory,
                                      final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
-        restartable(restartableId, new Func0<Subscription>() {
-            @Override
-            public Subscription call() {
-                return Observable.fromCallable(() -> {
-                    if (testListener != null) {
-                        testListener.waitIfNeeded(CustomRxPresenter.this.getClass(), restartableId);
-                    }
-                    return null;
-                }).subscribeOn(Schedulers.io())
-                        .flatMap(o -> observableFactory.call())
-                        .compose(CustomRxPresenter.this.deliverFirst())
-                        .subscribe(split(restartableId, onNext, onError));
-            }
-        });
+        restartable(restartableId, () -> createObservable(restartableId, observableFactory)
+                .compose(CustomRxPresenter.this.deliverFirst())
+                .subscribe(split(restartableId, onNext, onError)));
     }
 
-    /**
-     * This is a shortcut for calling {@link #restartableFirst(int, Func0, Action2, Action2)} with the last parameter = null.
-     */
-    public <T> void restartableFirst(int restartableId, final Func0<Observable<T>> observableFactory, final Action2<View, T> onNext) {
-        restartableFirst(restartableId, observableFactory, onNext, null);
-    }
-
-    /**
-     * This is a shortcut that can be used instead of combining together
-     * {@link #restartable(int, Func0)},
-     * {@link #deliverLatestCache()},
-     * {@link #split(Action2, Action2)}.
-     *
-     * @param restartableId     an id of the restartable.
-     * @param observableFactory a factory that should return an Observable when the restartable should run.
-     * @param onNext            a callback that will be called when received data should be delivered to view.
-     * @param onError           a callback that will be called if the source observable emits onError.
-     * @param <T>               the type of the observable.
-     */
     public <T> void restartableLatestCache(int restartableId, final Func0<Observable<T>> observableFactory,
                                            final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
-        restartable(restartableId, new Func0<Subscription>() {
-            @Override
-            public Subscription call() {
-                return observableFactory.call()
-                        .compose(CustomRxPresenter.this.deliverLatestCache())
-                        .subscribe(split(onNext, onError));
-            }
-        });
+        restartable(restartableId, () -> createObservable(restartableId, observableFactory)
+                .compose(CustomRxPresenter.this.deliverLatestCache())
+                .subscribe(split(restartableId, onNext, onError)));
     }
 
-    /**
-     * This is a shortcut for calling {@link #restartableLatestCache(int, Func0, Action2, Action2)} with the last parameter = null.
-     */
-    public <T> void restartableLatestCache(int restartableId, final Func0<Observable<T>> observableFactory, final Action2<View, T> onNext) {
-        restartableLatestCache(restartableId, observableFactory, onNext, null);
-    }
-
-    /**
-     * This is a shortcut that can be used instead of combining together
-     * {@link #restartable(int, Func0)},
-     * {@link #deliverReplay()},
-     * {@link #split(Action2, Action2)}.
-     *
-     * @param restartableId     an id of the restartable.
-     * @param observableFactory a factory that should return an Observable when the restartable should run.
-     * @param onNext            a callback that will be called when received data should be delivered to view.
-     * @param onError           a callback that will be called if the source observable emits onError.
-     * @param <T>               the type of the observable.
-     */
     public <T> void restartableReplay(int restartableId, final Func0<Observable<T>> observableFactory,
                                       final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
-        restartable(restartableId, new Func0<Subscription>() {
-            @Override
-            public Subscription call() {
-                return observableFactory.call()
-                        .compose(CustomRxPresenter.this.deliverReplay())
-                        .subscribe(split(onNext, onError));
-            }
-        });
+        restartable(restartableId, () -> createObservable(restartableId, observableFactory)
+                .compose(CustomRxPresenter.this.deliverReplay())
+                .subscribe(split(restartableId, onNext, onError)));
     }
 
-    /**
-     * This is a shortcut for calling {@link #restartableReplay(int, Func0, Action2, Action2)} with the last parameter = null.
-     */
-    public <T> void restartableReplay(int restartableId, final Func0<Observable<T>> observableFactory, final Action2<View, T> onNext) {
-        restartableReplay(restartableId, observableFactory, onNext, null);
+    private <T> Observable<T> createObservable(int restartableId, Func0<Observable<T>> observableFactory) {
+        return Observable.defer(() -> {
+            if (backgroundTasksTestListener != null) {
+                backgroundTasksTestListener.waitIfNeeded(CustomRxPresenter.this.getClass(), restartableId);
+            }
+            return observableFactory.call();
+        }).subscribeOn(Schedulers.io()) //+ Constructing observable on background thread is needed for:
+                // 1) the construction itself doesn't block the main thread (may be heavy sometimes);
+                // 2) in tests, if the background task start is postponed, awaiting happens on the background thread,
+                // instead of the main thread, which may be not critical in unit test (the main thread can be replaced),
+                // but critical in functional tests where Espresso blocks while the main thread is busy, and so the tests.
+                .observeOn(mainThread());
+    }
+
+    protected void onViewOnce(Function<View> function) {
+        add(view().filter(view -> view != null)
+                .take(1)
+                .subscribe(function::call));
+    }
+
+    protected void restartableOnViewOnce(int restartableId, Function<View> function) {
+        restartable(restartableId,
+                () -> view().filter(view -> view != null)
+                        .take(1)
+                        .subscribe(function::call)
+        );
     }
 
     /**
@@ -259,45 +211,16 @@ public class CustomRxPresenter<View> extends Presenter<View> {
         return new DeliverReplay<>(views);
     }
 
-    /**
-     * Returns a method that can be used for manual restartable chain build. It returns an Action1 that splits
-     * a received {@link Delivery} into two {@link Action2} onNext and onError calls.
-     *
-     * @param onNext  a method that will be called if the delivery contains an emitted onNext value.
-     * @param onError a method that will be called if the delivery contains an onError throwable.
-     * @param <T>     a type on onNext value.
-     * @return an Action1 that splits a received {@link Delivery} into two {@link Action2} onNext and onError calls.
-     */
-    public <T> Action1<Delivery<View, T>> split(final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
-        return new Action1<Delivery<View, T>>() {
-            @Override
-            public void call(Delivery<View, T> delivery) {
-                delivery.split(onNext, onError);
-            }
-        };
-    }
-
     public <T> Action1<Delivery<View, T>> split(final int restartableId, final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
-        return new Action1<Delivery<View, T>>() {
-            @Override
-            public void call(Delivery<View, T> delivery) {
-                try {
-                    delivery.split(onNext, onError);
-                } catch (Throwable ignored) {
-
-                }
-                if (testListener != null) {
-                    testListener.onComplete(CustomRxPresenter.this.getClass(), restartableId);
+        return delivery -> {
+            try {
+                delivery.split(onNext, onError);
+            } finally {
+                if (backgroundTasksTestListener != null) {
+                    backgroundTasksTestListener.onTerminated(CustomRxPresenter.this.getClass(), restartableId);
                 }
             }
         };
-    }
-
-    /**
-     * This is a shortcut for calling {@link #split(Action2, Action2)} when the second parameter is null.
-     */
-    public <T> Action1<Delivery<View, T>> split(Action2<View, T> onNext) {
-        return split(onNext, null);
     }
 
     /**
@@ -365,11 +288,15 @@ public class CustomRxPresenter<View> extends Presenter<View> {
         return super.getView();
     }
 
+    public interface Function<View> {
+        void call(View view);
+    }
+
     @VisibleForTesting
-    public interface TestListener {
+    public interface BackgroundTasksTestListener {
         void waitIfNeeded(Class presenterClass, int id);
 
-        void onComplete(Class presenterClass, int id);
+        void onTerminated(Class presenterClass, int id);
     }
 }
 

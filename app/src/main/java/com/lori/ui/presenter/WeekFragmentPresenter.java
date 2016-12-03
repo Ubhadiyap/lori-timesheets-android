@@ -35,7 +35,7 @@ public class WeekFragmentPresenter extends BasePresenter<WeekFragment> {
     protected void onCreate(Bundle savedState) {
         super.onCreate(savedState);
 
-        restartableFirstAsync(LOAD_WEEK_TIME_ENTRIES,
+        restartableFirst(LOAD_WEEK_TIME_ENTRIES,
                 () -> timeEntryService.loadPersonalWeekTimeEntries(mondayDate)
                         .observeOn(mainThread()),
                 (weekFragment, timeEntries) -> {

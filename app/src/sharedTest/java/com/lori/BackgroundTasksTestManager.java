@@ -10,7 +10,7 @@ import java.util.concurrent.CountDownLatch;
 /**
  * @author artemik
  */
-public class BackgroundTasksTestManager implements CustomRxPresenter.TestListener {
+public class BackgroundTasksTestManager implements CustomRxPresenter.BackgroundTasksTestListener {
     private final Map<Pair<Class, Integer>, CountDownLatch> taskCompletionBlocks = new HashMap<>();
     private final Map<Pair<Class, Integer>, CountDownLatch> resultWaitBlocks = new HashMap<>();
 
@@ -81,7 +81,7 @@ public class BackgroundTasksTestManager implements CustomRxPresenter.TestListene
     }
 
     @Override
-    public void onComplete(Class presenterClass, int id) {
+    public void onTerminated(Class presenterClass, int id) {
         synchronized (BackgroundTasksTestManager.class) {
 
             Pair<Class, Integer> key = new Pair<>(presenterClass, id);

@@ -28,9 +28,10 @@ public class LoginActivityTestInvalidLogin extends BaseInstrumentationTest {
         onView(withId(R.id.loginInputTextLayout)).check(matches(withHint(loginPrompt)));
 
         onView(withId(R.id.loginInputText)).perform(clearText());
-        onView(withId(R.id.loginInputText)).perform(closeSoftKeyboard());
+        closeSoftKeyboard();
+        sleep(1000);
 
-        onView(withId(R.id.signInButton)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.signInButton)).perform(click());
 
         String invalidLogin = mActivityRule.getActivity().getString(R.string.error_invalid_login);
         onView(withId(R.id.loginInputText)).check(matches(withError(invalidLogin)));

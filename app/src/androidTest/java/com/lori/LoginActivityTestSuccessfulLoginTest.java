@@ -42,10 +42,11 @@ public class LoginActivityTestSuccessfulLoginTest extends BaseInstrumentationTes
         server.start();
 
         onView(withId(R.id.serverUrlInputText)).perform(clearText(), typeText(server.url("").toString()));
-        onView(withId(R.id.serverUrlInputText)).perform(closeSoftKeyboard());
+        closeSoftKeyboard();
+        sleep(1000);
 
         block(LoginActivityPresenter.class, LOGIN_REQUEST);
-        onView(withId(R.id.signInButton)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.signInButton)).perform(click());
         onView(withId(R.id.signInButton)).check(matches(not(isClickable())));
         releaseAndWaitFor(LoginActivityPresenter.class, LOGIN_REQUEST);
 

@@ -41,8 +41,7 @@ public class LoginActivityTestSuccessfulLoginTest extends BaseInstrumentationTes
                 "}]")); // Load user.
         server.start();
 
-        onView(withId(R.id.serverUrlInputText)).perform(clearText(), typeText(server.url("").toString()));
-        closeSoftKeyboard();
+        onView(withId(R.id.serverUrlInputText)).perform(clearText(), typeText(server.url("").toString()), closeSoftKeyboard());
         sleep(1000);
 
         block(LoginActivityPresenter.class, LOGIN_REQUEST);

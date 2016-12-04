@@ -39,7 +39,7 @@ public class BaseInstrumentationTest {
 
         // TODO: get rid of this workaround.
         finishCurrentActivity();
-        sleep(10000);
+        sleep(5000);
     }
 
     protected void block(Class presenterClass, int id) {

@@ -27,11 +27,6 @@ public class BasePresenter<ViewType> extends CustomRxPresenter<ViewType> {
     }
 
     @Override
-    protected void onTakeView(ViewType viewType) {
-        super.onTakeView(viewType);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
 

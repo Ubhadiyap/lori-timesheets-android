@@ -6,11 +6,11 @@ import java.util.UUID;
 /**
  * @author artemik
  */
-public class BaseEntity implements Serializable {
+public abstract class BaseEntity implements Serializable {
     private UUID id;
 
     public BaseEntity() {
-        setId(UUID.randomUUID());
+        id = UUID.randomUUID();
     }
 
     public UUID getId() {

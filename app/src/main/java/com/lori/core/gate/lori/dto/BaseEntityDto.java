@@ -52,7 +52,7 @@ public abstract class BaseEntityDto {
     @JsonProperty("id")
     public void setJsonId(String jsonId) {
         if (jsonId != null) {
-            String uuid = jsonId.substring(jsonId.indexOf("-") + 1, jsonId.length());
+            String uuid = jsonId.substring(jsonId.indexOf('-') + 1, jsonId.length());
             id = UUID.fromString(uuid);
         }
     }

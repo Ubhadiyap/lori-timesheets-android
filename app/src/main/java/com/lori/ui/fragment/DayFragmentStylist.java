@@ -52,6 +52,10 @@ public class DayFragmentStylist {
             R.color.darker_deep_grey
     };
 
+    private DayFragmentStylist() {
+
+    }
+
     public static String getWeekAndMonthDayLabelPattern(Context context, Calendar date) {
         return getWeekAndMonthDayLabelPattern(context, DateHelper.getDayOfWeek(date));
     }

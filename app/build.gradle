@@ -3,6 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-apt'
 apply plugin: 'com.fernandocejas.frodo'
 apply plugin: 'com.jakewharton.hugo'
+apply from: '../code-quality/quality.gradle'
 
 repositories {
     jcenter()
@@ -107,6 +108,11 @@ android {
             events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
             exceptionFormat 'full'
         }
+    }
+
+    lintOptions {
+        textReport true
+        warningsAsErrors false
     }
 }
 

@@ -16,7 +16,6 @@ import java.util.List;
  * @author artemik
  */
 public class WeekTotalFragmentPresenter extends BasePresenter<WeekTotalFragment> {
-    private static final String TAG = WeekTotalFragmentPresenter.class.getSimpleName();
 
     private Calendar mondayDate;
     private int totalWeekMinutesSpent;

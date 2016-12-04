@@ -10,6 +10,10 @@ public class UiUtils {
     private static final int ENABLED_BUTTON_ALPHA = 1;
     private static final float DISABLED_BUTTON_ALPHA = 0.5f;
 
+    private UiUtils() {
+
+    }
+
     /**
      * Custom buttons enabling/disabling.
      * Standard Button.setEnabled(false) makes the button it too transparent.

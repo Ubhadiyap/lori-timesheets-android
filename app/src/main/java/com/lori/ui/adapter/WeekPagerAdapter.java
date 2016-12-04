@@ -14,20 +14,20 @@ import java.util.Calendar;
  */
 public class WeekPagerAdapter extends FragmentPagerAdapter {
 
-    private final int count = 3; //TODO: unlimited fragment loading
-    private final int middlePosition = count / 2;
+    private static final int COUNT = 3; //TODO: unlimited fragment loading
+    private static final int MIDDLE_POSITION = COUNT / 2;
 
     public WeekPagerAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
     public int getMiddlePosition() {
-        return middlePosition;
+        return MIDDLE_POSITION;
     }
 
     @Override
     public int getCount() {
-        return count;
+        return COUNT;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class WeekPagerAdapter extends FragmentPagerAdapter {
         Calendar currentDate = DateHelper.getCurrentDate();
         currentDate.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 
-        int weekOffset = position - middlePosition;
+        int weekOffset = position - MIDDLE_POSITION;
         currentDate.add(Calendar.WEEK_OF_MONTH, weekOffset);
 
         return currentDate;

@@ -34,8 +34,8 @@ public class CustomRxPresenter<View> extends Presenter<View> {
     private final BehaviorSubject<View> views = BehaviorSubject.create();
     private final CompositeSubscription subscriptions = new CompositeSubscription();
 
-    private final HashMap<Integer, Func0<Subscription>> restartables = new HashMap<>();
-    private final HashMap<Integer, Subscription> restartableSubscriptions = new HashMap<>();
+    private final Map<Integer, Func0<Subscription>> restartables = new HashMap<>();
+    private final Map<Integer, Subscription> restartableSubscriptions = new HashMap<>();
     private final ArrayList<Integer> requested = new ArrayList<>();
 
     @VisibleForTesting
@@ -125,7 +125,7 @@ public class CustomRxPresenter<View> extends Presenter<View> {
                                      final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
         restartable(restartableId, () -> createObservable(restartableId, observableFactory)
-                .compose(CustomRxPresenter.this.deliverFirst())
+                .compose(deliverFirst())
                 .subscribe(split(restartableId, onNext, onError)));
     }
 
@@ -133,7 +133,7 @@ public class CustomRxPresenter<View> extends Presenter<View> {
                                            final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
         restartable(restartableId, () -> createObservable(restartableId, observableFactory)
-                .compose(CustomRxPresenter.this.deliverLatestCache())
+                .compose(deliverLatestCache())
                 .subscribe(split(restartableId, onNext, onError)));
     }
 
@@ -141,7 +141,7 @@ public class CustomRxPresenter<View> extends Presenter<View> {
                                       final Action2<View, T> onNext, @Nullable final Action2<View, Throwable> onError) {
 
         restartable(restartableId, () -> createObservable(restartableId, observableFactory)
-                .compose(CustomRxPresenter.this.deliverReplay())
+                .compose(deliverReplay())
                 .subscribe(split(restartableId, onNext, onError)));
     }
 
@@ -229,8 +229,9 @@ public class CustomRxPresenter<View> extends Presenter<View> {
     @CallSuper
     @Override
     protected void onCreate(Bundle savedState) {
-        if (savedState != null)
+        if (savedState != null) {
             requested.addAll(savedState.getIntegerArrayList(REQUESTED_KEY));
+        }
     }
 
     /**
@@ -241,8 +242,9 @@ public class CustomRxPresenter<View> extends Presenter<View> {
     protected void onDestroy() {
         views.onCompleted();
         subscriptions.unsubscribe();
-        for (Map.Entry<Integer, Subscription> entry : restartableSubscriptions.entrySet())
+        for (Map.Entry<Integer, Subscription> entry : restartableSubscriptions.entrySet()) {
             entry.getValue().unsubscribe();
+        }
     }
 
     /**
@@ -254,8 +256,9 @@ public class CustomRxPresenter<View> extends Presenter<View> {
         for (int i = requested.size() - 1; i >= 0; i--) {
             int restartableId = requested.get(i);
             Subscription subscription = restartableSubscriptions.get(restartableId);
-            if (subscription != null && subscription.isUnsubscribed())
+            if (subscription != null && subscription.isUnsubscribed()) {
                 requested.remove(i);
+            }
         }
         state.putIntegerArrayList(REQUESTED_KEY, requested);
     }

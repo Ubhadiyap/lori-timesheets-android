@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ import java.util.List;
  */
 @RequiresPresenter(TimeEntryEditDialogPresenter.class)
 public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDialogPresenter> {
+    private static final String TAG = EditTimeEntryDialog.class.getSimpleName();
 
     private static final int DIALOG_ANIMATION_DURATION = 150;
 
@@ -283,18 +285,25 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
      * This is the only way so far to prevent the dialog from swipe close.
      */
     private void disableSwipeDismiss() {
-        Field f = null;
+        String minimumVelocityFieldName = "mMinFlingVelocity";
+
+        Field minimumVelocityField;
         try {
-            f = BottomSheetDialog.class.getDeclaredField("mMinFlingVelocity");
+            minimumVelocityField = BottomSheetDialog.class.getDeclaredField(minimumVelocityFieldName);
         } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Disable swipe dismiss workaround (disableSwipeDismiss()) error - couldn't find the %s field. " +
+                    "Probably, the library doesn't have this field anymore?", minimumVelocityFieldName), e);
+            return;
         }
-        f.setAccessible(true);
+
+        minimumVelocityField.setAccessible(true);
 
         try {
-            f.set(this, 100000000);
+            int veryFastMinimumVelocity = 100000000;
+            minimumVelocityField.set(this, veryFastMinimumVelocity);
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            Log.e(TAG, String.format("Disable swipe dismiss workaround (disableSwipeDismiss()) error - couldn't access the %s field.",
+                    minimumVelocityFieldName), e);
         }
     }
 }

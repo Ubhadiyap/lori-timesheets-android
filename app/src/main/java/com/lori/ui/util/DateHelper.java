@@ -25,6 +25,10 @@ public class DateHelper {
             R.string.month_december_name,
     };
 
+    private DateHelper() {
+
+    }
+
     public static String getMonthName(Calendar date, Context context) {
         return getMonthName(date.get(Calendar.MONTH), context);
     }

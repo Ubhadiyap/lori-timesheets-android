@@ -3,15 +3,17 @@ package com.lori.core.app.util;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * This class allows to inject into objects through a base class,
  * so we don't have to repeat injection code everywhere.
- *
+ * <p>
  * The performance drawback is about 0.013 ms per injection on a very slow device,
  * which is negligible in most cases.
- *
+ * <p>
  * Example:
  * <pre>{@code
  * Component {
@@ -41,14 +43,16 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ComponentReflectionInjector<T> implements Injector {
 
+    private static final ConcurrentMap<Class<?>, Map<Class<?>, Method>> CACHE = new ConcurrentHashMap<>();
+
     private final Class<T> componentClass;
     private final T component;
-    private final HashMap<Class<?>, Method> methods;
+    private final Map<Class<?>, Method> methods;
 
     public ComponentReflectionInjector(Class<T> componentClass, T component) {
         this.componentClass = componentClass;
         this.component = component;
-        this.methods = getMethods(componentClass);
+        this.methods = getInjectMethods(componentClass);
     }
 
     public T getComponent() {
@@ -65,33 +69,38 @@ public final class ComponentReflectionInjector<T> implements Injector {
             method = methods.get(targetClass);
         }
 
-        if (method == null)
+        if (method == null) {
             throw new RuntimeException(String.format("No %s injecting method exists in %s component", target.getClass(), componentClass));
+        }
 
         try {
             method.invoke(component, target);
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error while performing injection", e);
         }
     }
 
-    private static final ConcurrentHashMap<Class<?>, HashMap<Class<?>, Method>> cache = new ConcurrentHashMap<>();
-
-    private static HashMap<Class<?>, Method> getMethods(Class componentClass) {
-        HashMap<Class<?>, Method> methods = cache.get(componentClass);
+    private static Map<Class<?>, Method> getInjectMethods(Class componentClass) {
+        Map<Class<?>, Method> methods = CACHE.get(componentClass);
         if (methods == null) {
-            synchronized (cache) {
-                methods = cache.get(componentClass);
+            synchronized (CACHE) {
+                methods = CACHE.get(componentClass);
+                //noinspection Java8ReplaceMapGet
                 if (methods == null) {
-                    methods = new HashMap<>();
-                    for (Method method : componentClass.getMethods()) {
-                        Class<?>[] params = method.getParameterTypes();
-                        if (params.length == 1)
-                            methods.put(params[0], method);
-                    }
-                    cache.put(componentClass, methods);
+                    methods = doGetInjectMethods(componentClass);
+                    CACHE.put(componentClass, methods);
                 }
+            }
+        }
+        return methods;
+    }
+
+    private static Map<Class<?>, Method> doGetInjectMethods(Class componentClass) {
+        Map<Class<?>, Method> methods = new HashMap<>();
+        for (Method method : componentClass.getMethods()) {
+            Class<?>[] params = method.getParameterTypes();
+            if (params.length == 1) {
+                methods.put(params[0], method);
             }
         }
         return methods;

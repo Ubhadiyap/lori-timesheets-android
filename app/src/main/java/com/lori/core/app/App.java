@@ -16,6 +16,7 @@ public class App extends MultiDexApplication implements Injector {
     public void onCreate() {
         super.onCreate();
         component = createAppComponent();
+        //noinspection unchecked
         injector = new ComponentReflectionInjector(component.getClass(), component);
     }
 

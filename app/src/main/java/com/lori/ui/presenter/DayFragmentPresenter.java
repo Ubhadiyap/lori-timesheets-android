@@ -16,7 +16,6 @@ import java.util.List;
  * @author artemik
  */
 public class DayFragmentPresenter extends BasePresenter<DayFragment> {
-    private static final String TAG = DayFragmentPresenter.class.getSimpleName();
 
     private static final int UPDATE_TIME_ENTRIES = 0;
 

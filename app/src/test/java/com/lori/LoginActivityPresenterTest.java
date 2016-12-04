@@ -23,9 +23,9 @@ import static org.mockito.Mockito.*;
 
 public class LoginActivityPresenterTest extends BaseTest {
 
-    private final String validLogin = "login";
-    private final String validPassword = "password";
-    private final String validServerUrl = "http://127.0.0.1/";
+    private static final String VALID_LOGIN = "login";
+    private static final String VALID_PASSWORD = "password";
+    private static final String VALID_SERVER_URL = "http://127.0.0.1/";
 
     @Inject
     LoginService loginService;
@@ -44,11 +44,11 @@ public class LoginActivityPresenterTest extends BaseTest {
     @Test
     public void loginButtonClicked_ValidInput_RequestLoginFromServer() {
         LoginActivity view = mock(LoginActivity.class);
-        when(view.getLoginInputText()).thenReturn(validLogin);
-        when(view.getPasswordInputText()).thenReturn(validPassword);
-        when(view.getServerUrlInputText()).thenReturn(validServerUrl);
+        when(view.getLoginInputText()).thenReturn(VALID_LOGIN);
+        when(view.getPasswordInputText()).thenReturn(VALID_PASSWORD);
+        when(view.getServerUrlInputText()).thenReturn(VALID_SERVER_URL);
 
-        when(loginService.login(validLogin, validPassword, validServerUrl)).thenReturn(
+        when(loginService.login(VALID_LOGIN, VALID_PASSWORD, VALID_SERVER_URL)).thenReturn(
                 Observable.just(new User())
                         .subscribeOn(Schedulers.io())
         );
@@ -72,8 +72,8 @@ public class LoginActivityPresenterTest extends BaseTest {
     public void loginButtonClicked_InvalidLogin_ShowInvalidLoginError() {
         LoginActivity view = mock(LoginActivity.class);
         when(view.getLoginInputText()).thenReturn(null);
-        when(view.getPasswordInputText()).thenReturn(validPassword);
-        when(view.getServerUrlInputText()).thenReturn(validServerUrl);
+        when(view.getPasswordInputText()).thenReturn(VALID_PASSWORD);
+        when(view.getServerUrlInputText()).thenReturn(VALID_SERVER_URL);
 
         LoginActivityPresenter presenter = createPresenter(LoginActivityPresenter.class, view);
 
@@ -89,11 +89,11 @@ public class LoginActivityPresenterTest extends BaseTest {
     @Test
     public void loginButtonClicked_InvalidCredentials_ShowCredentialsAreIncorrect() {
         LoginActivity view = mock(LoginActivity.class);
-        when(view.getLoginInputText()).thenReturn(validLogin);
-        when(view.getPasswordInputText()).thenReturn(validPassword);
-        when(view.getServerUrlInputText()).thenReturn(validServerUrl);
+        when(view.getLoginInputText()).thenReturn(VALID_LOGIN);
+        when(view.getPasswordInputText()).thenReturn(VALID_PASSWORD);
+        when(view.getServerUrlInputText()).thenReturn(VALID_SERVER_URL);
 
-        when(loginService.login(validLogin, validPassword, validServerUrl)).thenReturn(
+        when(loginService.login(VALID_LOGIN, VALID_PASSWORD, VALID_SERVER_URL)).thenReturn(
                 Observable.<User>error(new LoriAuthenticationException())
                         .subscribeOn(Schedulers.io())
         );

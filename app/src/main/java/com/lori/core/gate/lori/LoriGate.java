@@ -35,8 +35,6 @@ public class LoriGate {
     @Inject
     RetrofitLoriServiceFactory retrofitLoriServiceFactory;
 
-    SessionService sessionService;
-
     private RetrofitLoriService retrofitLoriService;
 
     public static final String DATE_FORMAT = "yyyy-MM-dd";
@@ -49,8 +47,6 @@ public class LoriGate {
 
     @Inject
     public void setSessionService(SessionService sessionService) {
-        this.sessionService = sessionService;
-
         String savedServerUrl = sessionService.getServerUrl();
         if (savedServerUrl != null) {
             init(sessionService.getServerUrl());
@@ -156,13 +152,22 @@ public class LoriGate {
                 "select te from ts$TimeEntry te where te.user.id = :userId and (te.date between :start and :end)",
                 ImmutableMap.of(
                         "userId", user.getId(),
-                        "start", DATE_TIME_FORMAT_INSTANCE.format(start),
-                        "end", DATE_TIME_FORMAT_INSTANCE.format(end)
+                        "start", formatDate(start),
+                        "end", formatDate(end)
                 ),
                 "timeEntry.dayDisplay"
         ).subscribeOn(Schedulers.io())
                 .compose(mapErrorsToExceptions())
                 .map(this::convertTimeEntries);
+    }
+
+    /**
+     * Thread safely formats the date. {@link SimpleDateFormat} is not thread safe.
+     */
+    private String formatDate(Date start) {
+        synchronized (DATE_TIME_FORMAT_INSTANCE) {
+            return DATE_TIME_FORMAT_INSTANCE.format(start);
+        }
     }
 
     public <T> Observable.Transformer<T, T> mapErrorsToExceptions() {

@@ -6,6 +6,8 @@ import java.util.List;
  * @author artemik
  */
 public class Project extends BaseEntity {
+    private static final long serialVersionUID = 6516821408717032713L;
+
     private String name;
     private List<Task> tasks;
     private List<ActivityType> activityTypes;

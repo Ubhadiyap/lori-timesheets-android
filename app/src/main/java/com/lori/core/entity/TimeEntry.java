@@ -6,6 +6,8 @@ import java.util.Date;
  * @author artemik
  */
 public class TimeEntry extends BaseEntity {
+    private static final long serialVersionUID = 4644137665916421857L;
+
     private User user;
     private Date date;
     private Task task;

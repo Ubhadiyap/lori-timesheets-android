@@ -16,7 +16,7 @@ import nucleus.view.ViewWithPresenter;
 public abstract class NucleusBottomSheetDialog<P extends Presenter> extends BottomSheetDialog implements ViewWithPresenter<P> {
 
     private static final String PRESENTER_STATE_KEY = "presenter_state";
-    private PresenterLifecycleDelegate<P> presenterDelegate =
+    private final PresenterLifecycleDelegate<P> presenterDelegate =
             new PresenterLifecycleDelegate<>(ReflectionPresenterFactory.<P>fromViewClass(getClass()));
 
     public PresenterFactory<P> getPresenterFactory() {
@@ -50,8 +50,9 @@ public abstract class NucleusBottomSheetDialog<P extends Presenter> extends Bott
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        if (bundle != null)
+        if (bundle != null) {
             presenterDelegate.onRestoreInstanceState(bundle.getBundle(PRESENTER_STATE_KEY));
+        }
     }
 
     @Override

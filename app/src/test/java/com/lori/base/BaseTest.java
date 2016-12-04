@@ -8,6 +8,7 @@ import com.lori.app.TestApplication;
 import com.lori.ui.base.CustomRxPresenter;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
@@ -16,7 +17,7 @@ import rx.android.plugins.RxAndroidPlugins;
 import rx.android.plugins.RxAndroidSchedulersHook;
 import rx.schedulers.Schedulers;
 
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -32,10 +33,13 @@ public abstract class BaseTest {
     private ExecutorService mainThreadExecutor = Executors.newSingleThreadExecutor();
     private CustomRxPresenter presenterToTest;
 
+    @BeforeClass
+    public static void setupClass() {
+        CustomRxPresenter.backgroundTasksTestListener = BACKGROUND_TASKS_TEST_MANAGER;
+    }
+
     @Before
     public void setup() {
-        CustomRxPresenter.backgroundTasksTestListener = BACKGROUND_TASKS_TEST_MANAGER;
-
         mainThreadExecutor = Executors.newSingleThreadExecutor();
 
         RxAndroidPlugins.getInstance().registerSchedulersHook(new RxAndroidSchedulersHook() {
@@ -74,26 +78,12 @@ public abstract class BaseTest {
     }
 
     protected void onMainThreadBlocking(Runnable runnable) {
-        CountDownLatch latch = new CountDownLatch(1);
-        Wrapper<Throwable> thrownThrowableWrapper = new Wrapper<>();
-
-        mainThreadExecutor.submit(() -> {
-            try {
-                runnable.run();
-            } catch (Throwable t) {
-                thrownThrowableWrapper.wrappedObject = t;
-            }
-            latch.countDown();
-        });
-
         try {
-            latch.await();
+            mainThreadExecutor.submit(runnable).get();
         } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        if (thrownThrowableWrapper.wrappedObject != null) {
-            throw new RuntimeException(thrownThrowableWrapper.wrappedObject);
+            throw new RuntimeException("The testing thread was interrupted while waiting for a runnable to complete on the main thread", e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException("A runnable executing on the main thread thrown an exception", e.getCause());
         }
     }
 
@@ -122,9 +112,5 @@ public abstract class BaseTest {
         } catch (IllegalAccessException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static class Wrapper<T> {
-        Throwable wrappedObject;
     }
 }

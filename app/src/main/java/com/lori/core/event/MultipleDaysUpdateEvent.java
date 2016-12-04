@@ -12,8 +12,8 @@ import java.util.List;
  */
 public class MultipleDaysUpdateEvent {
     private final List<TimeEntry> allEntries;
-    private Calendar startRangeDate;
-    private Calendar endRangeDate;
+    private final Calendar startRangeDate;
+    private final Calendar endRangeDate;
 
     public MultipleDaysUpdateEvent(List<TimeEntry> allEntries, Calendar startRangeDate, Calendar endRangeDate) {
         this.allEntries = allEntries;

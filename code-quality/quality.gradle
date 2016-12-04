@@ -31,6 +31,8 @@ task findbugs(type: FindBugs) {
     classpath = files()
 
     excludeFilter = new File("${project.rootDir}/code-quality/findbugs-filter.xml")
+
+    maxHeapSize = '512m'
 }
 
 plugins.apply('checkstyle')

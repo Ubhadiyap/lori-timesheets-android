@@ -39,7 +39,7 @@ public class BaseInstrumentationTest {
 
         // TODO: get rid of this workaround.
         finishCurrentActivity();
-        sleep(5000);
+        sleep(10000);
     }
 
     protected void block(Class presenterClass, int id) {
@@ -68,7 +68,7 @@ public class BaseInstrumentationTest {
 
     protected void sleep(long millis) {
         try {
-            Thread.sleep(5000);
+            Thread.sleep(millis);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

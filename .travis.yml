@@ -31,10 +31,8 @@ script:
   # Build and unit tests.
   - ./gradlew --no-daemon --info build -PdisablePreDex
 
-  # Code quality tests.
-  - ./gradlew --no-daemon --info findbugs -PdisablePreDex
-
   # Start emulator before instrumented tests.
+  # This way it doesn't consume memory waiting, during the previous build steps.
   - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator

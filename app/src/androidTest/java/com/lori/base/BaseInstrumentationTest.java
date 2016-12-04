@@ -36,6 +36,10 @@ public class BaseInstrumentationTest {
     public void tearDown() {
         BACKGROUND_TASKS_TEST_MANAGER.tearDown();
         clearAppData();
+
+        // TODO: get rid of this workaround.
+        finishCurrentActivity();
+        sleep(5000);
     }
 
     protected void block(Class presenterClass, int id) {

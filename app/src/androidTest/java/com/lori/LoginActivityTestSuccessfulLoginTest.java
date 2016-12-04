@@ -42,6 +42,7 @@ public class LoginActivityTestSuccessfulLoginTest extends BaseInstrumentationTes
         server.start();
 
         onView(withId(R.id.serverUrlInputText)).perform(clearText(), typeText(server.url("").toString()));
+        onView(withId(R.id.serverUrlInputText)).perform(closeSoftKeyboard());
 
         block(LoginActivityPresenter.class, LOGIN_REQUEST);
         onView(withId(R.id.signInButton)).perform(click());
@@ -49,9 +50,5 @@ public class LoginActivityTestSuccessfulLoginTest extends BaseInstrumentationTes
         releaseAndWaitFor(LoginActivityPresenter.class, LOGIN_REQUEST);
 
         server.shutdown();
-
-        // TODO: get rid of this workaround.
-        finishCurrentActivity();
-        sleep(5000);
     }
 }

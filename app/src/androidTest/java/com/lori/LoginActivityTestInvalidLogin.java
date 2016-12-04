@@ -9,8 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.clearText;
-import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
@@ -29,12 +28,11 @@ public class LoginActivityTestInvalidLogin extends BaseInstrumentationTest {
         onView(withId(R.id.loginInputTextLayout)).check(matches(withHint(loginPrompt)));
 
         onView(withId(R.id.loginInputText)).perform(clearText());
+        onView(withId(R.id.loginInputText)).perform(closeSoftKeyboard());
+
         onView(withId(R.id.signInButton)).perform(click());
+
         String invalidLogin = mActivityRule.getActivity().getString(R.string.error_invalid_login);
         onView(withId(R.id.loginInputText)).check(matches(withError(invalidLogin)));
-
-        // TODO: get rid of this workaround.
-        finishCurrentActivity();
-        sleep(5000);
     }
 }

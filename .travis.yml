@@ -6,10 +6,12 @@ jdk: oraclejdk8
 
 android:
   components:
-    - platform-tools
     - tools
     - android-24
     - build-tools-24.0.2
+    - platform-tools
+    - build-tools-24.0.2
+    - android-24
     - extra-android-m2repository
     - extra-android-support
     - sys-img-armeabi-v7a-android-18
@@ -22,16 +24,23 @@ before_install:
  - chmod +x gradlew
  - pip install --user codecov
 
-before_script:
- - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
- - emulator -avd test -no-audio -no-window &
- - android-wait-for-emulator
- - adb shell input keyevent 82
-
 script:
+  # Clean.
   - ./gradlew --no-daemon --info clean
+
+  # Build and unit tests.
   - ./gradlew --no-daemon --info build -PdisablePreDex
+
+  # Code quality tests.
   - ./gradlew --no-daemon --info findbugs -PdisablePreDex
+
+  # Start emulator before instrumented tests.
+  - echo no | android create avd --force -n test -t android-18 --abi armeabi-v7a
+  - emulator -avd test -no-audio -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82
+
+  # Instrumented tests.
   - ./gradlew --no-daemon --info --stacktrace test connectedAndroidTest -PdisablePreDex
 
 after_success:

@@ -10,13 +10,6 @@ repositories {
     maven { url "https://jitpack.io" }
 }
 
-def keystorePropertiesFile = rootProject.file("keystore.properties")
-
-def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()) {
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-}
-
 frodo {
     enabled = true
 }
@@ -24,10 +17,11 @@ frodo {
 android {
     signingConfigs {
         config {
-            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+            // For a real app hide the keystore file and credentials.
+            storeFile file('keystore.jks')
+            storePassword 'lori-app'
+            keyAlias 'lori-app'
+            keyPassword 'lori-app'
         }
     }
     compileSdkVersion 24

@@ -30,6 +30,7 @@ before_script:
 
 script:
   - ./gradlew --no-daemon --info clean
+  - ./gradlew --no-daemon --info build -PdisablePreDex
   - ./gradlew --no-daemon --info --stacktrace test connectedAndroidTest -PdisablePreDex
 
 after_success:

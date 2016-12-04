@@ -36,6 +36,6 @@ captures/
 *.iml
 .idea/
 
-# Keystore files
-*.jks
-keystore.properties
+# Keystore files (Uncomment for real applications)
+# *.jks
+# keystore.properties

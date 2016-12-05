@@ -14,6 +14,11 @@ import static org.mockito.Mockito.mock;
 public class TestApplication extends App {
 
     @Override
+    protected void initAnalytics() {
+        // Disable analytics in tests.
+    }
+
+    @Override
     protected AppComponent createAppComponent() {
         return DaggerTestAppComponent.builder()
                 .appModule(new AppModule(this))

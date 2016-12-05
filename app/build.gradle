@@ -1,4 +1,16 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        // Check here for new versions: https://s3.amazonaws.com/fabric-artifacts/public/io/fabric/tools/gradle/maven-metadata.xml
+        classpath 'io.fabric.tools:gradle:1.21.5'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'android-apt'
 apply plugin: 'com.fernandocejas.frodo'
@@ -9,6 +21,7 @@ repositories {
     jcenter()
     maven { url "https://clojars.org/repo/" }
     maven { url "https://jitpack.io" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 frodo {
@@ -28,18 +41,19 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
 
+    def STRING = "String"
+
+    def DEFAULT_LOGIN = 'DEFAULT_LOGIN'
+    def DEFAULT_LOGIN_VALUE = '\"admin\"'
+
+    def DEFAULT_PASSWORD = 'DEFAULT_PASSWORD'
+    def DEFAULT_PASSWORD_VALUE = '\"admin\"'
+
+    def DEFAULT_SERVER_URL = 'DEFAULT_SERVER_URL'
+    def DEFAULT_SERVER_URL_VALUE = '\"http://192.168.1.7:8080/app/dispatch/api/\"'
+    def DEFAULT_RELEASE_SERVER_URL_VALUE = '\"http://lori-server.herokuapp.com/app/dispatch/api/\"'
+
     defaultConfig {
-        def STRING = "String"
-
-        def DEFAULT_LOGIN = 'DEFAULT_LOGIN'
-        def DEFAULT_LOGIN_VALUE = '\"admin\"'
-
-        def DEFAULT_PASSWORD = 'DEFAULT_PASSWORD'
-        def DEFAULT_PASSWORD_VALUE = '\"admin\"'
-
-        def DEFAULT_SERVER_URL = 'DEFAULT_SERVER_URL'
-        def DEFAULT_SERVER_URL_VALUE = '\"http://192.168.1.7:8080/app/dispatch/api/\"'
-
         buildConfigField STRING, DEFAULT_LOGIN, DEFAULT_LOGIN_VALUE
         buildConfigField STRING, DEFAULT_PASSWORD, DEFAULT_PASSWORD_VALUE
         buildConfigField STRING, DEFAULT_SERVER_URL, DEFAULT_SERVER_URL_VALUE
@@ -67,6 +81,7 @@ android {
             signingConfig signingConfigs.config
             debuggable true
             testCoverageEnabled true
+            buildConfigField STRING, DEFAULT_SERVER_URL, DEFAULT_RELEASE_SERVER_URL_VALUE
         }
         
         debug {
@@ -188,5 +203,8 @@ dependencies {
     androidTestCompile ('com.squareup.okhttp3:mockwebserver:3.4.2') {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
         exclude group: 'com.squareup.okio', module: 'okio'
+    }
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+        transitive = true;
     }
 }

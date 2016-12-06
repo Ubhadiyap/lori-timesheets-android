@@ -4,7 +4,9 @@
 [![codecov.io](https://codecov.io/github/artemik/lori-timesheets-android/coverage.svg?branch=master)](https://codecov.io/github/artemik/lori-timesheets-android/coverage.svg?branch=master)
 
 This is an Android client for the open source timesheets management system [Lori Timesheets](https://github.com/Haulmont/platform-sample-timesheets).
-
+## Demo
+A demo server: [https://lori-server.herokuapp.com/app](https://lori-server.herokuapp.com/app). Download the [release Android app](https://github.com/artemik/lori-timesheets-android/releases) to play around.
+## Description
 The application lets you manage timesheets - view, add, edit, delete time entries, etc.
 
 Mainly, the application consists of two screens - a week overview screen and a time entry edit dialog (pictures below). A gif video demonstrating the application is in the [demo folder](demo/video-gif.gif).

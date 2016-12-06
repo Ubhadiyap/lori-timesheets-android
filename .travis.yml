@@ -43,7 +43,7 @@ script:
   - adb shell input keyevent 82
 
   # Instrumented tests.
-  - ./gradlew --no-daemon --info --stacktrace test connectedAndroidTest -PdisablePreDex
+  - ./gradlew --no-daemon --info --stacktrace connectedAndroidTest -PdisablePreDex
 
 after_success:
   - codecov

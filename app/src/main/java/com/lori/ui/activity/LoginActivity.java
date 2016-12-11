@@ -90,15 +90,15 @@ public class LoginActivity extends BaseActivity<LoginActivityPresenter> {
         return serverUrlInputText.getText().toString();
     }
 
-    public void setSignInButtonEnabled(boolean enabled) {
-        UiUtils.setButtonEnabled(signInButton, enabled);
-    }
+    public void setControlsActive(boolean active) {
+        loginInputText.setEnabled(active);
+        passwordInputText.setEnabled(active);
+        serverUrlInputText.setEnabled(active);
+        UiUtils.setButtonEnabled(signInButton, active);
 
-    @Override
-    public void onBackPressed() {
-        if (getPresenter().onBackPressed()) {
-            super.onBackPressed();
-        }
+        signInButton.setText(active ?
+                getString(R.string.sign_in_label) :
+                getString(R.string.sign_in_label_in_progress));
     }
 }
 

@@ -13,7 +13,8 @@
             android:theme="@style/AppTheme">
         <activity
                 android:name=".ui.activity.LauncherActivity"
-                android:theme="@style/Theme.AppCompat.Translucent">
+                android:theme="@style/Translucent"
+                android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -22,20 +23,17 @@
         </activity>
         <activity
                 android:name=".ui.activity.LoginActivity"
-                android:label="@string/app_name">
+                android:label="@string/app_name"
+                android:screenOrientation="portrait">
         </activity>
         <activity
                 android:name=".ui.activity.WeekActivity"
-                android:label="@string/app_name">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
+                android:label="@string/app_name"
+                android:screenOrientation="portrait">
         </activity>
         <meta-data
-            android:name="io.fabric.ApiKey"
-            android:value="f0a3cf453d547814dce3f9283864c72839a98fed" />
+                android:name="io.fabric.ApiKey"
+                android:value="f0a3cf453d547814dce3f9283864c72839a98fed"/>
     </application>
 
 </manifest>

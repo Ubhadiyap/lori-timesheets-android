@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.OnClick;
-import com.balysv.materialripple.MaterialRippleLayout;
 import com.lori.R;
 import com.lori.core.entity.TimeEntry;
 import com.lori.ui.adapter.TimeEntryListAdapter;
@@ -91,7 +90,7 @@ public class DayFragment extends BaseFragment<DayFragmentPresenter> {
 
         initWeekDayLabel();
 
-        timeEntriesList.setAdapter(new TimeEntryListAdapter(this));
+        timeEntriesList.setAdapter(new TimeEntryListAdapter(this, null));
         timeEntriesList.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (android.text.format.DateUtils.isToday(dayDate.getTimeInMillis())) {
@@ -145,7 +144,7 @@ public class DayFragment extends BaseFragment<DayFragmentPresenter> {
         weekAndMonthDayLabel.setText(formattedText);
     }
 
-    public void onTimeEntryClick(MaterialRippleLayout timeEntryRootView, TimeEntry timeEntry) {
+    public void onTimeEntryClick(TimeEntry timeEntry) {
         mDialog = new EditTimeEntryDialog(getActivity().getApplication(), getContext(), dayDate, timeEntry);
         mDialog.show();
     }

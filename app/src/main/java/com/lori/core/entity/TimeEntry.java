@@ -17,6 +17,15 @@ public class TimeEntry extends BaseEntity {
     public TimeEntry() {
     }
 
+    public TimeEntry(TimeEntry fromTimeEntry) {
+        setId(fromTimeEntry.getId());
+        this.user = fromTimeEntry.getUser();
+        this.date = fromTimeEntry.getDate();
+        this.task = fromTimeEntry.getTask();
+        this.activityType = fromTimeEntry.getActivityType();
+        this.timeInMinutes = fromTimeEntry.getTimeInMinutes();
+    }
+
     public User getUser() {
         return user;
     }

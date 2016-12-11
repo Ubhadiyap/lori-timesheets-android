@@ -6,6 +6,7 @@
     <string name="prompt_password">Password</string>
     <string name="prompt_server_url">Server url</string>
     <string name="sign_in_label">Sign in</string>
+    <string name="sign_in_label_in_progress">Signing in…</string>
     <string name="error_invalid_login">Login is invalid</string>
     <string name="error_invalid_password">Password is invalid</string>
     <string name="error_invalid_server_url">Server url is invalid</string>
@@ -13,13 +14,13 @@
     <string name="error_incorrect_credentials">Login or password is incorrect</string>
     <string name="login_required">Login is required for this operation</string>
 
-    <string name="monday_pattern">ПН [%s]</string>
-    <string name="tuesday_pattern">ВТ [%s]</string>
-    <string name="wednesday_pattern">СР [%s]</string>
-    <string name="thursday_pattern">ЧТ [%s]</string>
-    <string name="friday_pattern">ПТ [%s]</string>
-    <string name="saturday_pattern">СБ [%s]</string>
-    <string name="sunday_pattern">ВС [%s]</string>
+    <string name="monday_pattern">ПН•%s</string>
+    <string name="tuesday_pattern">ВТ•%s</string>
+    <string name="wednesday_pattern">СР•%s</string>
+    <string name="thursday_pattern">ЧТ•%s</string>
+    <string name="friday_pattern">ПТ•%s</string>
+    <string name="saturday_pattern">СБ•%s</string>
+    <string name="sunday_pattern">ВС•%s</string>
 
     <string name="logout_menu_item">Logout</string>
     <string name="today_menu_item">Today</string>
@@ -28,10 +29,13 @@
     <string name="dialog_time_entry_hours_label">4. Hours</string>
     <string name="dialog_time_entry_minutes_label">5. Minutes</string>
     <string name="dialog_time_entry_delete_button_text">delete</string>
+    <string name="dialog_time_entry_delete_button_text_in_progress">deletion…</string>
     <string name="dialog_time_entry_add_button_text">add</string>
+    <string name="dialog_time_entry_add_button_text_in_progress">adding…</string>
     <string name="dialog_time_entry_task_label">2. Task</string>
     <string name="dialog_time_entry_save_button_text">save</string>
-    <string name="empty_time_entry_list_place_holder_label">empty</string>
+    <string name="dialog_time_entry_save_button_text_in_progress">saving…</string>
+    <string name="empty_time_entry_list_place_holder_label">no entries</string>
     <string name="week_totals_fragment_total_label">total</string>
     <string name="month_january_name">January</string>
     <string name="month_february_name">February</string>
@@ -45,4 +49,6 @@
     <string name="month_october_name">October</string>
     <string name="month_november_name">November</string>
     <string name="month_december_name">December</string>
+    <string name="dialog_time_entry_add_title">New Entry</string>
+    <string name="dialog_time_entry_edit_title">Edit Entry</string>
 </resources>

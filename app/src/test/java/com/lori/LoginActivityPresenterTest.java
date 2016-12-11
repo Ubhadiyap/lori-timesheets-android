@@ -58,7 +58,7 @@ public class LoginActivityPresenterTest extends BaseTest {
         onMainThreadBlocking(() -> {
             presenter.onSignInButtonClick();
 
-            verify(view).setSignInButtonEnabled(false);
+            verify(view).setControlsActive(false);
         });
 
         waitForCompletion(LoginActivityPresenter.class, LOGIN_REQUEST);

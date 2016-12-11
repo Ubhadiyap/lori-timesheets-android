@@ -1,6 +1,5 @@
 package com.lori.ui.base;
 
-import android.annotation.SuppressLint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +19,9 @@ import java.util.List;
  * @author artemik
  */
 public abstract class TimeEntryPartBaseListAdapter<T extends BaseEntity> extends RecyclerView.Adapter<TimeEntryPartBaseListAdapter.ViewHolder> {
+
+    private static final int RADIUS_ENOUGH_TO_COVER_TIME_ENTRY_ITEM = 500;
+
     private final List<T> items = new ArrayList<>();
     protected EditTimeEntryDialog dialog;
     private int selectedIndex = 0;
@@ -65,20 +67,18 @@ public abstract class TimeEntryPartBaseListAdapter<T extends BaseEntity> extends
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, @SuppressLint("RecyclerView") int i) {
-        T item = items.get(i);
-
-        String text = toString(item);
+    public void onBindViewHolder(ViewHolder viewHolder, int i) {
+        String text = toString(items.get(i));
         viewHolder.partNameTextView.setText(text);
 
-        viewHolder.rippleView.setRadius(viewHolder.getAdapterPosition() == selectedIndex ? 500 : 0);
+        viewHolder.rippleView.setRadius(i == selectedIndex ? RADIUS_ENOUGH_TO_COVER_TIME_ENTRY_ITEM : 0);
 
         viewHolder.partNameTextView.setOnClickListener(v -> {
             int prevSelectedIndex = selectedIndex;
-            selectedIndex = i;
+            selectedIndex = viewHolder.getAdapterPosition();
             notifyItemChanged(prevSelectedIndex);
 
-            onItemClick(item);
+            onItemClick(items.get(selectedIndex));
         });
     }
 

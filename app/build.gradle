@@ -24,6 +24,14 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+// The file fabric.properties contains a secret Fabric api key, so it's not stored in the repository.
+// But this field is required for building the project, so create it from the FABRIC_LORI_API_SECRET environment variable.
+def fabricProperties = file('fabric.properties')
+if (!fabricProperties.exists()) {
+    fabricProperties.text = "#Generated from gradle\r\n" +
+            "apiSecret=$System.env.FABRIC_LORI_API_SECRET"
+}
+
 frodo {
     enabled = true
 }
@@ -50,8 +58,8 @@ android {
     def DEFAULT_PASSWORD_VALUE = '\"admin\"'
 
     def DEFAULT_SERVER_URL = 'DEFAULT_SERVER_URL'
-    def DEFAULT_SERVER_URL_VALUE = '\"http://192.168.1.7:8080/app/dispatch/api/\"'
-    def DEFAULT_RELEASE_SERVER_URL_VALUE = '\"http://lori-server.herokuapp.com/app/dispatch/api/\"'
+    // Local address value'\"http://192.168.1.7:8080/app/dispatch/api/\"'
+    def DEFAULT_SERVER_URL_VALUE = '\"http://lori-server.herokuapp.com/app/dispatch/api/\"'
 
     defaultConfig {
         buildConfigField STRING, DEFAULT_LOGIN, DEFAULT_LOGIN_VALUE
@@ -81,9 +89,8 @@ android {
             signingConfig signingConfigs.config
             debuggable true
             testCoverageEnabled true
-            buildConfigField STRING, DEFAULT_SERVER_URL, DEFAULT_RELEASE_SERVER_URL_VALUE
         }
-        
+
         debug {
             applicationIdSuffix '.debug'
             testCoverageEnabled true
@@ -200,7 +207,7 @@ dependencies {
 
     androidTestCompile 'com.android.support:support-annotations:24.2.1'
 
-    androidTestCompile ('com.squareup.okhttp3:mockwebserver:3.4.2') {
+    androidTestCompile('com.squareup.okhttp3:mockwebserver:3.4.2') {
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
         exclude group: 'com.squareup.okio', module: 'okio'
     }

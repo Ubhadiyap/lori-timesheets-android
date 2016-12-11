@@ -8,7 +8,7 @@ import android.widget.Button;
 public class UiUtils {
 
     private static final int ENABLED_BUTTON_ALPHA = 1;
-    private static final float DISABLED_BUTTON_ALPHA = 0.5f;
+    private static final float DISABLED_BUTTON_ALPHA = 0.4f;
 
     private UiUtils() {
 

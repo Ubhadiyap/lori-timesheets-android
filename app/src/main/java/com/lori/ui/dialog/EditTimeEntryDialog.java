@@ -47,6 +47,9 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
 
     private static final int RIPPLE_COVER_RADIUS = 500;
 
+    @BindView(R.id.dialogTitleTextView)
+    TextView dialogTitleTextView;
+
     @BindView(R.id.projectsListView)
     RecyclerView projectsListView;
 
@@ -100,6 +103,11 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
     @Override
     public void onViewCreated(View view) {
         super.onViewCreated(view);
+
+        String dialogTitle = getPresenter().getTimeEntryToEdit() == null ?
+                getContext().getString(R.string.dialog_time_entry_add_title) :
+                getContext().getString(R.string.dialog_time_entry_edit_title);
+        dialogTitleTextView.setText(dialogTitle);
 
         initEntryPartListView(projectsListView, new ProjectListAdapter(this));
         initEntryPartListView(tasksListView, new TaskListAdapter(this));
@@ -259,7 +267,24 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
     public void setButtonsAreActive(boolean active) {
         UiUtils.setButtonEnabled(confirmButton, active);
         UiUtils.setButtonEnabled(deleteButton, active);
+    }
 
+    public void setConfirmButtonInProgress(boolean inProgress) {
+        if (inProgress) {
+            confirmButton.setText(getPresenter().getTimeEntryToEdit() == null ?
+                    getString(R.string.dialog_time_entry_add_button_text_in_progress) :
+                    getString(R.string.dialog_time_entry_save_button_text_in_progress));
+        } else {
+            confirmButton.setText(getPresenter().getTimeEntryToEdit() == null ?
+                    getString(R.string.dialog_time_entry_add_button_text) :
+                    getString(R.string.dialog_time_entry_save_button_text));
+        }
+    }
+
+    public void setDeleteButtonInProgress(boolean inProgress) {
+        deleteButton.setText(inProgress ?
+                getString(R.string.dialog_time_entry_delete_button_text_in_progress) :
+                getString(R.string.dialog_time_entry_delete_button_text));
     }
 
     public void setButtonsAreForEdit(boolean forEdit) {
@@ -305,5 +330,9 @@ public class EditTimeEntryDialog extends BaseBottomSheetDialog<TimeEntryEditDial
             Log.e(TAG, String.format("Disable swipe dismiss workaround (disableSwipeDismiss()) error - couldn't access the %s field.",
                     minimumVelocityFieldName), e);
         }
+    }
+
+    private String getString(int resId) {
+        return getContext().getString(resId);
     }
 }

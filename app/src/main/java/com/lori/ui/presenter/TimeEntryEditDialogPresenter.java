@@ -101,6 +101,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                             eventBus.post(TimeEntryChangedEvent.added(timeEntryToCommit));
                         }
                     });
+                    dialog.setConfirmButtonInProgress(false);
                     dialog.dismiss();
                 },
                 (dialog, throwable) -> {
@@ -111,6 +112,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                         dialog.showNetworkError();
                     }
                     dialog.setButtonsAreActive(true);
+                    dialog.setConfirmButtonInProgress(false);
                 });
     }
 
@@ -121,6 +123,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                     dialog.setOnDismissListener(dialog1 -> {
                         eventBus.post(TimeEntryChangedEvent.removed(timeEntryToEdit));
                     });
+                    dialog.setDeleteButtonInProgress(false);
                     dialog.dismiss();
                 },
                 (dialog, throwable) -> {
@@ -131,6 +134,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
                         dialog.showNetworkError();
                     }
                     dialog.setButtonsAreActive(true);
+                    dialog.setDeleteButtonInProgress(false);
                 });
     }
 
@@ -156,6 +160,7 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
 
     public void onConfirmButtonClick() {
         getView().setButtonsAreActive(false);
+        getView().setConfirmButtonInProgress(true);
 
         timeEntryToCommit = isEditing() ? getCopy(timeEntryToEdit) : new TimeEntry();
         timeEntryToCommit.setDate(dayDate.getTime());
@@ -181,16 +186,12 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
     }
 
     private TimeEntry getCopy(TimeEntry timeEntry) {
-        TimeEntry copy = new TimeEntry();
-        copy.setDate(timeEntry.getDate());
-        copy.setTask(timeEntry.getTask());
-        copy.setActivityType(timeEntry.getActivityType());
-        copy.setTimeInMinutes(timeEntry.getTimeInMinutes());
-        return copy;
+        return new TimeEntry(timeEntry);
     }
 
     public void onDeleteButtonClick() {
         getView().setButtonsAreActive(false);
+        getView().setDeleteButtonInProgress(true);
         start(DELETE_TIME_ENTRY);
     }
 
@@ -200,5 +201,9 @@ public class TimeEntryEditDialogPresenter extends BasePresenter<EditTimeEntryDia
 
     public void setTimeEntryToEdit(TimeEntry timeEntryToEdit) {
         this.timeEntryToEdit = timeEntryToEdit;
+    }
+
+    public TimeEntry getTimeEntryToEdit() {
+        return timeEntryToEdit;
     }
 }

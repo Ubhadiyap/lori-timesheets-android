@@ -44,7 +44,7 @@ public class WeekActivity extends BaseActivity<WeekActivityPresenter> {
         WeekPagerAdapter adapter = new WeekPagerAdapter(getSupportFragmentManager());
         weekPager.setAdapter(adapter);
         weekPager.setCurrentItem(adapter.getMiddlePosition());
-        weekPager.setOffscreenPageLimit(10);
+        weekPager.setOffscreenPageLimit(3);
     }
 
     public void showCurrentWeek() {

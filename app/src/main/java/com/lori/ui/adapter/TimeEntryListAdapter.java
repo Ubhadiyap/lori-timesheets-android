@@ -25,11 +25,22 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
     protected DayFragment fragment;
     private boolean isEmpty;
 
-    public TimeEntryListAdapter(DayFragment fragment) {
+    public TimeEntryListAdapter(DayFragment fragment, List<TimeEntry> entries) {
         this.fragment = fragment;
+        doSetEntries(entries);
     }
 
     public void setEntries(List<TimeEntry> newEntries) {
+        if (newEntries == null) {
+            return;
+        }
+
+        doSetEntries(newEntries);
+
+        notifyDataSetChanged();
+    }
+
+    private void doSetEntries(List<TimeEntry> newEntries) {
         if (newEntries == null) {
             return;
         }
@@ -42,8 +53,6 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
             isEmpty = false;
             entries.addAll(newEntries);
         }
-
-        notifyDataSetChanged();
     }
 
     public void addTimeEntry(TimeEntry newTimeEntry) {
@@ -56,10 +65,11 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
         }
     }
 
-    public void updateTimeEntry(TimeEntry changedTimeEntry) {
+    public void updateTimeEntry(TimeEntry updatedTimeEntry) {
         for (int i = 0; i < entries.size(); i++) {
             TimeEntry timeEntry = entries.get(i);
-            if (timeEntry.getId().equals(changedTimeEntry.getId())) {
+            if (timeEntry.equals(updatedTimeEntry)) {
+                entries.set(i, updatedTimeEntry);
                 notifyItemChanged(i);
                 break;
             }
@@ -71,6 +81,7 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
             TimeEntry timeEntry = entries.get(i);
             if (timeEntry.getId().equals(deletedTimeEntry.getId())) {
                 entries.remove(i);
+                isEmpty = entries.isEmpty();
                 notifyItemRemoved(i);
                 break;
             }
@@ -110,9 +121,7 @@ public class TimeEntryListAdapter extends RecyclerView.Adapter<TimeEntryListAdap
         String projectAndActivityText = String.format("%s (%s)", entry.getTask().getProject().getName(), entry.getActivityType().getName());
         viewHolder.projectAndActivityTextView.setText(projectAndActivityText);
 
-        viewHolder.rippleView.setOnClickListener(v -> {
-            fragment.onTimeEntryClick(viewHolder.rippleView, entry);
-        });
+        viewHolder.rippleView.setOnClickListener(v -> fragment.onTimeEntryClick(entry));
     }
 
     @Override

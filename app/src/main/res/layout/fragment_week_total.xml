@@ -20,7 +20,8 @@
                 android:fontFamily="sans-serif"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:textSize="40sp"/>
+                android:textSize="40sp"
+                android:freezesText="true"/>
 
         <TextView
                 android:layout_width="wrap_content"

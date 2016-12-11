@@ -3,7 +3,7 @@ package com.lori.ui.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import com.lori.ui.fragment.WeekFragment;
 import com.lori.ui.util.DateHelper;
 
@@ -12,9 +12,9 @@ import java.util.Calendar;
 /**
  * @author artemik
  */
-public class WeekPagerAdapter extends FragmentPagerAdapter {
+public class WeekPagerAdapter extends FragmentStatePagerAdapter {
 
-    private static final int COUNT = 3; //TODO: unlimited fragment loading
+    private static final int COUNT = 1000; //TODO: unlimited fragment loading
     private static final int MIDDLE_POSITION = COUNT / 2;
 
     public WeekPagerAdapter(FragmentManager fragmentManager) {

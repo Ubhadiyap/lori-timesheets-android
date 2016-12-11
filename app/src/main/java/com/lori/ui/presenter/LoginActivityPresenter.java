@@ -44,7 +44,7 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
                         Log.e(TAG, "Couldn't login", throwable);
                         loginActivity.showNetworkError();
                     }
-                    loginActivity.setSignInButtonEnabled(true);
+                    loginActivity.setControlsActive(true);
                 });
     }
 
@@ -71,7 +71,7 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
         }
         typedServerUrl = serverUrl;
 
-        getView().setSignInButtonEnabled(false);
+        getView().setControlsActive(false);
         start(LOGIN_REQUEST);
     }
 
@@ -90,13 +90,9 @@ public class LoginActivityPresenter extends BasePresenter<LoginActivity> {
         return Patterns.WEB_URL.matcher(serverUrl).matches();
     }
 
-    public boolean onBackPressed() {
-        return true;
-    }
-
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         loginService.onLoginActivityClosed();
+        super.onDestroy();
     }
 }

@@ -5,15 +5,10 @@
         <item name="colorPrimary">@android:color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@android:color/holo_blue_dark</item>
-        <!--<item name="colorAccent">@color/darker_yellow</item>-->
     </style>
 
-    <style name="Theme.AppCompat.Translucent">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:colorBackgroundCacheHint">@null</item>
+    <style name="Translucent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
     <style name="AppTheme.TimeEntry.Button.Confirm" parent="ThemeOverlay.AppCompat">
